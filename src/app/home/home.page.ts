@@ -7,6 +7,12 @@ import { Component } from '@angular/core';
 })
 export class HomePage {
 
+  name: String = ''
+
   constructor() {}
+
+  marco(){
+    console.log(this.name)
+  }
 
 }
