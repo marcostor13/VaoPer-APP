@@ -1,0 +1,7 @@
+{
+  "name": "vaoperu",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
