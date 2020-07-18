@@ -10,14 +10,14 @@ import { combineLatest } from 'rxjs';
 })
 export class ApiService {
 
-  url: string = ''; // disponer url de su servidor que tiene las páginas PHP
+  url: string = 'https://api.vaoperu.com/api/';
 
   constructor(private http: HttpClient, private cookie: CookieService, private router: Router) { //private firestore: AngularFirestore
-    if (window.location.href.indexOf('104.155.156.43') > -1 || window.location.href.indexOf('vaoperu') > -1) {
-      this.url = 'https://api.vaoperu.com/api/';
-    } else {
-      this.url = 'http://localhost:8000/api/';
-    }
+    // if (window.location.href.indexOf('104.155.156.43') > -1 || window.location.href.indexOf('vaoperu') > -1) {
+    //   this.url = 'https://api.vaoperu.com/api/';
+    // } else {
+    //   this.url = 'http://localhost:8000/api/';
+    // }
   }
 
 

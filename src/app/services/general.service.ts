@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { CookieService } from 'ngx-cookie-service';
-import { DeviceDetectorService } from 'ngx-device-detector';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +9,7 @@ export class GeneralService {
 
   user: any;
 
-  constructor(public api: ApiService, public cookie: CookieService, private deviceService: DeviceDetectorService) {
+  constructor(public api: ApiService, public cookie: CookieService) {
     if (this.cookie.get('ud') && this.cookie.get('ud') != '') {
       this.user = JSON.parse(this.cookie.get('ud'))
     }
@@ -98,7 +97,7 @@ export class GeneralService {
         description: '',
         userid: this.user.user.id,
         token: this.user.token,
-        ga: JSON.stringify(this.deviceService),
+        ga: 'mobile',
         service: 'save-event'
       }
       this.api.api(data).subscribe((result: any) => {
@@ -113,7 +112,7 @@ export class GeneralService {
         companyid: companyid,
         description: '',
         userid: '0',
-        ga: JSON.stringify(this.deviceService),
+        ga: 'mobile',
         service: 'save-event'
       }
       this.api.api(data).subscribe((result: any) => {

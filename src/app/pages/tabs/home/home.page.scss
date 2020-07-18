@@ -1,0 +1,83 @@
+@import './../../../../styles/variables';
+
+.img{
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    min-width: 88%;
+    min-height: 300px;
+    border-radius: 16px;
+    padding: 10px;
+}   
+
+
+.item{
+    border-radius: 16px;
+    min-height: 80px;
+    img{
+        max-width: 80%;
+        max-height: 46px;
+    }
+    .down{
+        max-width: 20px;
+    }
+    .subitem{
+        border-radius: 16px;
+        min-height: 50px;
+        img{
+            max-width: 80%;
+            max-height: 36px;  
+        }
+    }
+
+
+
+}
+
+.iconimage{
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;   
+    min-width: 30px; 
+    max-height: 30px;
+    min-height: 30px;
+}
+
+.search{
+    flex: 1;
+    position: relative;
+    ::placeholder{
+        color: $color5;
+        font-size: 12pt;
+    }
+    img{
+        position: absolute;
+        top: 27%;
+        left: 20px;
+        max-width: 26px;
+    }
+    input{
+        font-size: 12pt;
+        width: 100%;
+        border: 2.5px solid  $color1;
+        padding: 5px;
+        background-color: rgba($color: #000000, $alpha: 0);
+        color: $color3;
+        border-radius: 50px;
+        padding-left: 58px;
+        min-height: 60px;
+    }
+
+    :focus{
+        outline: 0;
+    }
+
+    button{
+        border-radius: 50px !important;
+        position: absolute;
+        right: 0px;
+        min-height: 54px;
+        top: 3px;
+    }
+
+}
