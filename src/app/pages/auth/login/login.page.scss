@@ -1,0 +1,57 @@
+@import '../../../../styles/variables';
+
+.login{
+
+    min-height: 100vh;
+}
+
+input{
+    border: 1px solid #FFFFFF;
+    padding: 8px;
+    background-color: rgba($color: #000000, $alpha: 0);
+    color: white !important;
+    border-radius: 50px;
+    padding-left: 14px;
+}
+
+input::placeholder{
+    color: white;
+}
+
+:focus{
+    outline: 0;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus{
+  border: 1px solid #FFFFFF !important;
+  -webkit-text-fill-color: FFFFFF !important;
+  transition: background-color 5000s ease-in-out 0s;
+  color: white !important;
+}
+
+.btn-login{
+    background-color: rgba($color: #FFFFFF, $alpha: 1);
+    color: $color3 !important;
+    border-radius: 50px;
+    padding: 8px;
+    border: 0 solid #FFFFFF;
+}
+
+.password-input{
+    position: relative;
+    img{
+        max-width: 22px;
+        position: absolute;
+        right: 14px;
+        top: 14px;
+    }
+}
+
+.btnInicio{
+    background-color: rgba($color: #000000, $alpha: 0);
+    border-radius: 8px;
+    border: solid 2px #FFFFFF;
+    color: white;
+}

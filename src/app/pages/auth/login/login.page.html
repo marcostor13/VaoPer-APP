@@ -1,0 +1,54 @@
+<!-- <ion-header>
+  <ion-toolbar>
+    <ion-title>login</ion-title>
+  </ion-toolbar>
+</ion-header> -->
+
+<ion-content>
+
+  <div class="login d-flex flex-column p-5 m-0 gdt1 justify-content-center align-items-center">
+    <div class="col-md-4 col-12">
+  
+      <div>
+        <img [routerLink]="['/']" width="140" src="/assets/img/logo.jpeg" alt="">
+      </div>
+  
+  
+  
+      <h5 class="col-12 text-white mt-4 font-100 f-18">Hola! Bienvenido,</h5>
+      <p class="col-12 text-white f-10 mb-5">Inicia sesión para continuar</p>
+  
+      <div class="d-flex flex-column justify-content-center mt-5">
+        <label class="text-white font-300">Correo</label>
+        <input class="text-white" type="email" [(ngModel)]="email" placeholder="Ingrese su correo">
+      </div>
+      <div class="d-flex flex-column justify-content-center mt-2">
+        <label class="text-white font-300">Contraseña</label>
+        <div class="password-input col-12 m-0 p-0">
+          <input class="text-white col-12" [type]="isPassword ? 'password' : 'text'" [(ngModel)]="password" placeholder="Ingrese su contraseña">
+          <img (click)="eye()" src="/assets/img/partials/eye.svg">
+        </div>
+      </div>
+      <p class="text-white mt-2 col-12 text-right">¿Olvidaste tu contraseña?</p>
+  
+  
+      <button (click)="onLogin()" class="btn-login mt-3 font-500 col-12">Ingresar</button>
+      <p class="text-white text-center mt-2">¿Usuario nuevo? <a href="/register"
+          class="text-white font-700">Regístrate</a></p>
+      <p class="text-white text-center mt-2">{{response}}</p>
+  
+  
+      <div [routerLink]="['/']" class="col-12 row m-0 justify-content-center">
+        <button class="btnInicio row m-0 justify-content-center align-items-center pt-1 pb-1 pl-3 pr-3">
+          <img width="20" class="mr-2" src="/assets/img/partials/home2.svg">
+          Ir al inicio
+        </button>
+      </div>
+  
+    </div>
+  
+  
+  
+  </div>
+
+</ion-content>
