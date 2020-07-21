@@ -55,10 +55,11 @@ export class HomePage implements OnInit {
   validateSession() {
     if (this.cookie.get('ud') && this.cookie.get('ud') != '') {
       this.user = JSON.parse(this.cookie.get('ud'))
-      this.api.c('user', this.user)
+      this.api.c('user role', this.user.user.role)
 
-      if (this.user.user.role === "proveedor") {
-        this.router.navigate(['/dashboard'])
+      if (this.user.user.role == "proveedor") {
+        this.api.c('user role', this.user.user.role)
+        this.router.navigate(['/tabs-provider'])
       }
     }else{
       this.router.navigate(['/login'])
@@ -139,7 +140,7 @@ export class HomePage implements OnInit {
   onclickOpenSubcategories(index, subcategories, category): void {
 
     if (subcategories === 0) {
-      this.router.navigate(['/results/' + category])
+      this.router.navigate(['/tabs/home/results/' + category])
     }
 
     if (!this.visibleIndices.delete(index)) {

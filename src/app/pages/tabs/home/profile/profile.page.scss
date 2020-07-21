@@ -1,0 +1,127 @@
+@import './../../../../../styles/variables';
+
+
+.linea{
+    border-bottom: solid 3px $color7;
+}
+
+.main-photo{
+    border-radius: 10px;
+    background-color: $color7;
+    min-height:925vw;
+    min-width: 92vw;
+    max-width: 92vw;
+    min-width: 92vw !important;
+}
+
+.imgProfileEdit{
+    border-radius: 10px;
+    background-color: white;
+    min-height: 92vw;
+    min-width: 92vw;
+    max-width: 92vw;
+    min-width: 92vw !important;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+:focus{
+        outline: 0;
+    }
+
+.img{
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100%;
+    min-height: 250px;
+    border-radius: 16px;
+    overflow: hidden;
+     -webkit-box-shadow: 1px 3px 8px 5px rgba(194,194,194,1);
+    -moz-box-shadow: 1px 3px 8px 5px rgba(194,194,194,1);
+    box-shadow: 1px 3px 8px 5px rgba(194,194,194,1);
+}   
+
+
+.description{
+    background-color: rgba($color: $color2, $alpha: .7);
+    span{
+        color: white;
+        font-size: 11pt;
+    }
+}
+
+.main-photo2{
+    min-width: 300px;
+    max-width: 300px;
+}
+
+
+:focus{
+    outline: 0;
+}
+
+button:disabled{
+    background-color: $color7 !important;
+}
+
+
+.border-1{
+    border-radius: 10px;
+}
+
+
+.vertical-line{
+    min-width: 6px;
+    min-height: 54px;
+}
+
+#map{
+    min-height: 280px;
+}
+
+.card-item{
+    -webkit-box-shadow: 1px 3px 8px 5px rgba(194,194,194,1);
+    -moz-box-shadow: 1px 3px 8px 5px rgba(194,194,194,1);
+    box-shadow: 1px 3px 8px 5px rgba(194,194,194,1);
+    border-radius: 10px;
+    max-width: 300px;        
+    min-width: 300px;
+    max-height: 450px !important;
+    min-height: 450px !important;
+    position: relative;
+    overflow: hidden;
+    .img-item{
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        background-color: $color7;
+        border-radius: 10px 10px 0 0;             
+        max-width: 300px;        
+        min-width: 300px;
+        max-height: 300px;
+        min-height: 300px;
+    }
+}
+
+.parraf{
+    min-height: 30px;
+}
+
+
+//LOAD
+
+.load{
+    position: fixed;
+    top: 0;
+    left: 0;
+    min-width: 100vw;
+    min-height: 100vh;
+    background-color: rgba($color: #ffffff, $alpha: .9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    img{
+        opacity: .9;
+    }
+}

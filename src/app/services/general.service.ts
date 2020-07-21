@@ -65,12 +65,7 @@ export class GeneralService {
   }
 
   getUrlImages(type) {
-    if (window.location.href.indexOf('104.155.156.43') > -1 || window.location.href.indexOf('vaoperu') > -1) {
-      return 'https://api.vaoperu.com/' + type + '/'
-    } else {
-      return 'http://localhost:8000/' + type + '/'
-    }
-
+    return 'https://api.vaoperu.com/' + type + '/'
   }
 
   getPosition(): Promise<any> {
@@ -97,7 +92,7 @@ export class GeneralService {
         description: '',
         userid: this.user.user.id,
         token: this.user.token,
-        ga: 'mobile',
+        ga: JSON.stringify([{ga: 'mobile'}]),
         service: 'save-event'
       }
       this.api.api(data).subscribe((result: any) => {

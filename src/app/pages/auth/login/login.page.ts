@@ -39,9 +39,15 @@ export class LoginPage implements OnInit {
       password: this.password,
       service: 'login'
     }
-    this.api.api(data).subscribe(result => {
+    this.api.api(data).subscribe((result:any) => {
       this.cookie.set('ud', JSON.stringify(result));
-      this.router.navigate(['/tabs']);
+
+      if(result.user.role_id == 2){
+        this.router.navigate(['/tabs-provider']);
+      }else{
+        this.router.navigate(['/tabs']);
+      }
+
     },
       error => {
         if (error.status == 401) {

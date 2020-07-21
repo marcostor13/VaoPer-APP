@@ -1,0 +1,78 @@
+<!-- <ion-header>
+  
+</ion-header> -->
+
+<ion-content>
+
+  <div class="pt-3 pl-3 pr-3">
+    <button *ngIf="companyData" [routerLink]="['/tabs-provider/profile-provider/edit-profile/'+companyData.id]" class="btn3 pt-2 pb-2 font-700 pl-3 pr-3">Editar Perfil</button>
+  </div>
+
+  <div class="p-3">
+
+      <ng-container *ngIf="companyData">
+          <div class="row justify-content-center justify-content-lg-start m-0">
+
+              <div class="">
+
+                  <div *ngIf="companyData.image && companyData.image.indexOf('data:image') > -1" class="imgProfileEdit col-12" [ngStyle]="{'background-image': 'url('+companyData.image+')'}"></div>      
+                  <div *ngIf="companyData.image && companyData.image.indexOf('data:image') === -1" class="imgProfileEdit col-12" [ngStyle]="{'background-image': 'url('+urlBackEnd + getUriImage(companyData.image)+')'}"></div>      
+
+                  <div *ngIf="!companyData.image" class="main-photo row m-0 justify-content-center align-items-center">
+                      <p class="font-700">Foto de perfil</p>
+                  </div>
+                  <div class="col-12 row m-0 p-0 justify-content-end mt-2">
+                      <button class="btn3 pr-3 pl-3 pt-2 pb-2 font-700 f-10">INFORMACIÓN</button>
+                  </div>
+              </div>
+
+              <div class="col-12 p-0 col-lg-4 ml-0 ml-lg-4 ">
+                  
+                  <p class="font-700 mt-2 f-12">{{companyData.comercialname}}</p>
+                  <p *ngIf="companyData.description && companyData.description != '' && companyData.description != 'null'" class="font-500 mt-2 f-11">{{companyData.description}}</p>
+                  <div class="row m-0">
+                      <a href="tel:{{companyData.phone1}}" class="btn1 flex-1 pt-2 pb-2 mr-2 font-700 text-center link-unstyled">LLAMADA</a>
+                      <button class="btn2 flex-1 pt-2 pb-2 font-700">MENSAJE</button>
+                  </div>
+              </div>
+          </div>
+
+      </ng-container>
+    
+  </div>
+
+  <hr class="linea">
+
+  <div class="pl-3 pr-3">
+    <p class="font-700 text-center text-lg-left f-18">Secciones</p>
+  </div>
+
+  <div class="p-3 mb-5 pb-5">
+      <div class="sections row m-0 align-items-center">
+          <label class="switch">
+              <input (change)="onChangeSections()" type="checkbox" [(ngModel)]="productsSection">
+              <span class="slider round"></span>
+          </label>
+          <p class="ml-4 font-700 p-0 mb-2 f-16">Productos</p>
+      </div>
+      <div class="sections row m-0 align-items-center mt-2">
+          <label class="switch">
+              <input (change)="onChangeSections()" type="checkbox" [(ngModel)]="featuredSection">
+              <span class="slider round"></span>
+          </label>
+          <p class="ml-4 font-700 p-0 mb-2 f-16">Productos destacados</p>
+      </div>
+      <div class="sections row m-0 align-items-center mt-2">
+          <label class="switch">
+              <input (change)="onChangeSections()" type="checkbox" [(ngModel)]="offersSection">
+              <span class="slider round"></span>
+          </label>
+          <p class="ml-4 font-700 p-0 mb-2 f-16">Ofertas Activas</p>
+      </div>
+  </div>
+
+  <div *ngIf="isLoad" class="load">
+      <img src="/assets/img/partials/load.svg">
+  </div>
+
+</ion-content>

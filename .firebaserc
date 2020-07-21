@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "vaoperu-1e949": {
+      "hosting": {
+        "app": [
+          "vaoperu-1e949"
+        ]
+      }
+    }
+  }
+}

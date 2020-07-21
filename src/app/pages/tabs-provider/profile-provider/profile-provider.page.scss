@@ -1,0 +1,192 @@
+@import './../../../../styles/variables';
+
+
+.carrusel{
+
+    .item{
+
+        .img{
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            min-width: 100%;
+            min-height: 200px;
+            border-radius: 16px;
+            padding: 10px;
+        }
+        
+        
+    }
+}
+
+.linea{
+    border-bottom: solid 3px $color7;
+}
+
+.menu{
+    p{
+        min-width: 20px;
+        min-height: 2px;
+        background-color: white;
+    }
+}
+.search{
+    flex: 1;
+    position: relative;
+    ::placeholder{
+        color: $color5;
+        font-size: 12pt;
+    }
+    img{
+        position: absolute;
+        top: 27%;
+        left: 20px;
+        max-width: 26px;
+    }
+    input{
+        font-size: 12pt;
+        width: 100%;
+        border: 2.5px solid  $color1;
+        padding: 5px;
+        background-color: rgba($color: #000000, $alpha: 0);
+        color: $color3;
+        border-radius: 50px;
+        padding-left: 58px;
+        min-height: 60px;
+    }
+
+    :focus{
+        outline: 0;
+    }
+
+}
+
+.main-photo{
+    border-radius: 10px;
+    background-color: $color7;
+    min-height: 25vw;
+    min-width: 25vw;
+    max-width: 25vw;
+}
+
+.imgProfileEdit{
+    border-radius: 10px;
+    background-color: white;
+    min-height: 25vw;
+    min-width: 25vw;
+    max-width: 25vw;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.add{
+    max-width: 40px;
+}
+
+.link-unstyled{
+    color: inherit;
+    text-decoration: inherit;
+}
+
+
+
+
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 28px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: $color2;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px $color2;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(22px);
+  -ms-transform: translateX(22px);
+  transform: translateX(22px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+
+//LOAD
+
+.load{
+    position: fixed;
+    top: 0;
+    left: 0;
+    min-width: 100vw;
+    min-height: 100vh;
+    background-color: rgba($color: #ffffff, $alpha: .9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    img{
+        opacity: .9;
+    }
+}
+
+:focus{
+    outline: 0;
+}
+
+@media (max-width: 992px) {
+  .main-photo{    
+      min-height: 90vw;
+      min-width: 90vw;
+      max-width: 90vw;
+  }
+
+  .imgProfileEdit{
+      
+      min-height: 90vw;
+      min-width: 90vw;
+      max-width: 90vw;
+    
+  }
+}

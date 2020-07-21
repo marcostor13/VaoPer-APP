@@ -1,0 +1,222 @@
+<ion-content>
+  <header class="pt-3 pr-3 pl-3">
+    <button [routerLink]="['/tabs-provider/profile-provider']" class="btn1 pt-2 pb-2">Regresar</button>
+</header>
+
+<hr class="linea">
+
+<div class="p-3">
+    <h6 class="font-700 text-center text-xl-left">EDITAR PERFIL</h6>
+</div>
+
+<div class="p-3 col-12 col-xl-5">
+
+    <div class="form-group mt-2">
+        <label class="row m-0 align-items-center">Categorías y subcategorías
+            <img (click)="showModal()" width="24" class="ml-3" src="/assets/img/partials/add.svg" alt="+">
+        </label>
+        <div class="categories-content border rounded pb-2 mt-3 row m-0 align-items-center justify-content-start">
+            <ng-container *ngFor="let cat of categoryCompanies">
+                <div class="ml-2 mt-2"  [ngClass]="{'item-category': cat.type=='category', 'item-subcategory': cat.type=='subcategory'}">                    
+                    <span class="f-10 font-700">{{cat.name}}</span>
+                    <img (click)="deleteCategories(cat.id)" width="10" class="ml-2" src="/assets/img/partials/delete.svg">                    
+                </div>              
+            </ng-container>
+        </div>
+    </div>
+
+    <div class="form-group mt-2">
+        <label>Foto de Portada</label>
+        <input (change)="fileChangeEvent($event)" accept="image/*" type="file" class="form-control" [(ngModel)]="image">
+    </div>   
+    
+
+    <div class="form-group mt-2">
+        <label>Name</label>
+        <input type="text" class="form-control" placeholder="Ingrese el nombre" [(ngModel)]="name">
+    </div>
+
+    <div class="form-group mt-2">
+        <label>Description</label>
+        <input type="text" class="form-control" placeholder="Ingrese la descripción" [(ngModel)]="description">
+    </div>
+
+    <div class="form-group mt-2">
+        <label>Phone</label>
+        <input type="text" class="form-control" placeholder="Ingrese el teléfono" [(ngModel)]="phone">
+    </div>
+
+    <!-- <div class="form-group mt-2">
+        <label>Facebook</label>
+        <input type="text" class="form-control" placeholder="Ingrese facebook" [(ngModel)]="facebook">
+    </div>
+
+    <div class="form-group mt-2">
+        <label>Twitter</label>
+        <input type="text" class="form-control" placeholder="Ingrese twitter" [(ngModel)]="twitter">
+    </div>
+
+    <div class="form-group mt-2">
+        <label>Instagram</label>
+        <input type="text" class="form-control" placeholder="Ingrese instagram" [(ngModel)]="instagram">
+    </div> -->
+
+    <div class="form-group mt-2">
+        <label>Correo</label>
+        <input type="text" class="form-control" placeholder="Ingrese el correo" [(ngModel)]="email">
+    </div>
+
+    <div class="form-group mt-2">
+        <label>Sitio Web</label>
+        <input type="text" class="form-control" placeholder="Ingrese el sitio web" [(ngModel)]="siteweb">
+    </div>
+
+    <div class="form-group mt-2">
+        <label>Nombre Legal de la empresa</label>
+        <input type="text" class="form-control" placeholder="Ingrese el nombre legal de la empresa" [(ngModel)]="legalname">
+    </div>
+
+    <div class="form-group mt-2">
+        <label>RUC</label>
+        <input type="text" class="form-control" placeholder="Ingrese el ruc" [(ngModel)]="ruc">
+    </div>
+
+    <div class="form-group mt-2 ">
+        <label>Direccion</label>
+        <input type="text" class="form-control" placeholder="Ingrese direccion" [(ngModel)]="address">
+    </div>
+
+    <div class="form-group mt-2">
+        <label>Distrito</label>
+        <select class="form-control" [(ngModel)]="district">
+            <option value="">Seleccione</option>
+            <option value="ANCON">ANCON</option>
+            <option value="ATE">ATE</option>
+            <option value="BARRANCO">BARRANCO</option>
+            <option value="BREÑA">BREÑA</option>
+            <option value="CARABAYLLO">CARABAYLLO</option>
+            <option value="CHACLACAYO">CHACLACAYO</option>
+            <option value="CHORRILLOS">CHORRILLOS</option>
+            <option value="CIENEGUILLA">CIENEGUILLA</option>
+            <option value="COMAS">COMAS</option>
+            <option value="EL AGUSTINO">EL AGUSTINO</option>
+            <option value="INDEPENDENCIA">INDEPENDENCIA</option>
+            <option value="JESUS MARIA">JESUS MARIA</option>
+            <option value="LA MOLINA">LA MOLINA</option>
+            <option value="LA VICTORIA">LA VICTORIA</option>
+            <option value="LIMA">LIMA</option>
+            <option value="LINCE">LINCE</option>
+            <option value="LOS OLIVOS">LOS OLIVOS</option>
+            <option value="LURIGANCHO">LURIGANCHO</option>
+            <option value="LURIN">LURIN</option>
+            <option value="MAGDALENA DEL MAR">MAGDALENA DEL MAR</option>
+            <option value="MIRAFLORES">MIRAFLORES</option>
+            <option value="PACHACAMAC">PACHACAMAC</option>
+            <option value="PUCUSANA">PUCUSANA</option>
+            <option value="PUEBLO LIBRE">PUEBLO LIBRE</option>
+            <option value="PUENTE PIEDRA">PUENTE PIEDRA</option>
+            <option value="PUNTA HERMOSA">PUNTA HERMOSA</option>
+            <option value="PUNTA NEGRA">PUNTA NEGRA</option>
+            <option value="RIMAC">RIMAC</option>
+            <option value="SAN BARTOLO">SAN BARTOLO</option>
+            <option value="SAN BORJA">SAN BORJA</option>
+            <option value="SAN ISIDRO">SAN ISIDRO</option>
+            <option value="SAN JUAN DE LURIGANCHO">SAN JUAN DE LURIGANCHO</option>
+            <option value="SAN JUAN DE MIRAFLORES">SAN JUAN DE MIRAFLORES</option>
+            <option value="SAN LUIS">SAN LUIS</option>
+            <option value="SAN MARTIN DE PORRES">SAN MARTIN DE PORRES</option>
+            <option value="SAN MIGUEL">SAN MIGUEL</option>
+            <option value="SANTA ANITA">SANTA ANITA</option>
+            <option value="SANTA MARIA DEL MAR">SANTA MARIA DEL MAR</option>
+            <option value="SANTA ROSA">SANTA ROSA</option>
+            <option value="SANTIAGO DE SURCO">SANTIAGO DE SURCO</option>
+            <option value="SURQUILLO">SURQUILLO</option>
+            <option value="VILLA EL SALVADOR">VILLA EL SALVADOR</option>
+            <option value="VILLA MARIA DEL TRIUNFO">VILLA MARIA DEL TRIUNFO</option>
+        </select>
+    </div>
+
+    
+    <div class="row justify-content-end m-0 col-12">
+        <button (click)="saveProfile()" class="btn1 font-700 pt-2 pb-2">Guardar</button>
+    </div>
+
+    <div class="form-group mt-2">
+        <p class="text-color4">{{response}}</p>
+    </div>
+</div>
+
+
+<div class="modal" *ngIf="isVisibleModal">
+    
+    <div class="content-modal">
+        <div class="header-modal row m-0 justify-content-between align-items-center">
+            <h6 class="title-modal font-700 text-color2">Categorías</h6>
+            <img (click)="closeModal()" width="20" src="assets/img/partials/close.svg">
+        </div>
+
+        <div class="mt-3">
+            <div class="form-group">
+                <select (change)="onChangeCategory()" class="form-control" [(ngModel)]="category">
+                    <option value="" selected>Seleccionar categoría</option>
+                    <option *ngFor="let c of categories" value="{{c.id}}">{{c.name}}</option>
+                </select>
+            </div>
+            <div *ngIf="subcategories.length > 0" class="form-group">
+                <select class="form-control" [(ngModel)]="subcategory">
+                    <option value="" selected>Seleccionar subcategoría</option>
+                    <option *ngFor="let s of subcategories" value="{{s.id}}">{{s.name}}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="mt-3 row justify-content-end">
+            <button (click)="addCategories()" class="btn1 pl-3 pr-3 pt-1 pb-1 mr-3">Agregar</button>
+        </div>
+
+    </div>
+  
+</div>
+
+<div *ngIf="isLoad" class="load">
+    <img src="/assets/img/partials/load.svg">
+</div>
+
+<div class="modal " *ngIf="isVisibleCortar">
+
+    <div class="content-modal modal2">
+        <div class="header-modal row m-0 justify-content-between align-items-center">
+            <h6 class="title-modal font-700 text-color2">Cortar Imagen</h6>
+            <img (click)="handleCancelCortar()" width="20" src="assets/img/partials/close.svg">
+        </div>
+
+        <div class="form-group mt-2">
+            <div class="row" style="margin-top: 5%;">
+                <div class="text-center col-md-8">
+                    <h5>Cortar Imagen</h5>
+                    <image-cropper 
+                    [imageChangedEvent]="imageChangedEvent" 
+                    [maintainAspectRatio]="true" 
+                    [aspectRatio]="1 / 1"
+                    [resizeToWidth]="256" 
+                    format="png" 
+                    (imageCropped)="imageCropped($event)" 
+                    (imageLoaded)="imageLoaded()"
+                    (cropperReady)="cropperReady()" 
+                    (loadImageFailed)="loadImageFailed()"></image-cropper>
+                </div>
+                <div class="text-center col-md-4">
+                    <h5>Previsualizar</h5>
+                    <img [src]="croppedImage" />
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-3 row justify-content-end">
+            <button (click)="handleOkCortar()" class="btn1 pl-3 pr-3 pt-1 pb-1 mr-3">Terminar</button>
+        </div>
+
+    </div>
+
+</div>
+</ion-content>

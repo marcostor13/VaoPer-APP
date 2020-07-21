@@ -1,0 +1,100 @@
+@import './../../../../styles/variables';
+
+.linea{
+    border-bottom: solid 3px $color7;
+}
+
+.content{
+    min-height: 100vh;
+    .menu{
+        p{
+            min-width: 20px;
+            min-height: 2px;
+            background-color: white;
+        }
+    }
+    .search{
+        flex: 1;
+        position: relative;
+        ::placeholder{
+            color: $color5;
+            font-size: 12pt;
+        }
+        img{
+            position: absolute;
+            top: 27%;
+            left: 20px;
+            max-width: 26px;
+        }
+        input{
+            font-size: 12pt;
+            width: 100%;
+            border: 2.5px solid  $color1;
+            padding: 5px;
+            background-color: rgba($color: #000000, $alpha: 0);
+            color: $color3;
+            border-radius: 50px;
+            padding-left: 58px;
+            min-height: 60px;
+        }
+
+        :focus{
+            outline: 0;
+        }
+
+        button{
+            border-radius: 50px !important;
+            position: absolute;
+            right: 0px;
+            top: 3px;
+        }
+
+
+
+    }
+}
+
+
+.item{
+    -webkit-box-shadow: 1px 3px 8px 5px rgba(194,194,194,1);
+    -moz-box-shadow: 1px 3px 8px 5px rgba(194,194,194,1);
+    box-shadow: 1px 3px 8px 5px rgba(194,194,194,1);
+    border-radius: 10px;
+    .img-item{
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        background-color: rgb(194, 194, 194);
+        border-radius: 10px 10px 0 0;
+        max-width: 100%;        
+        min-width: 100%;
+        max-height: 260px;
+        min-height: 260px;
+    }
+}
+
+
+//LOAD
+
+.load{
+    position: fixed;
+    top: 0;
+    left: 0;
+    min-width: 100vw;
+    min-height: 100vh;
+    background-color: rgba($color: #ffffff, $alpha: .9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    img{
+        opacity: .9;
+    }
+}
+
+:focus{
+    outline: 0;
+}
+
+button:disabled{
+    background-color: $color7 !important;
+}

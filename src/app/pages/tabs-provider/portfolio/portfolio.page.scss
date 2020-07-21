@@ -1,0 +1,14 @@
+.option{
+    border-radius: 10px;
+}
+
+.content-portfolio{
+      min-height: 20vh;
+  }
+
+
+@media (min-width: 992px) {
+  .content-portfolio{
+      min-height: 100vh;
+  }
+}

@@ -30,7 +30,7 @@
               <img *ngIf="cat.subcategories.length > 0" class="down ml-3" src="/assets/img/partials/down.svg">
           </div>
           <ng-container *ngIf="visibleIndices.has(index)">
-              <div *ngFor="let subcat of cat.subcategories" class="subitem col-12 bg-white row m-0 justify-content-between align-items-center mt-2" [routerLink]="['/results/'+subcat.name]" >
+              <div *ngFor="let subcat of cat.subcategories" class="subitem col-12 bg-white row m-0 justify-content-between align-items-center mt-2" [routerLink]="['/tabs/home/results/'+subcat.name]" >
                   <div class="col-8 row">
                       <h6 class="f-12 font-700 text-color2">{{subcat.name}}</h6>
                   </div>

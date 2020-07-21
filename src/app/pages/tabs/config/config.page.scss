@@ -1,0 +1,62 @@
+@import './../../../../styles/variables';
+
+header{
+    .user-image{
+        min-width: 50px;
+        min-height: 50px;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+    }
+}
+.linea{
+    border-bottom: solid 3px $color7;
+}
+
+.date{
+    border: solid 2px $color1;
+    border-radius: 10px;
+    min-height: 40px;
+}
+
+.display{
+    p{
+        font-weight: 500;
+    }
+    label{
+        font-size: 30pt;
+        font-weight: 900;
+    }
+    .left{
+        border-radius: 10px 0 0 10px;
+        border-right: solid 2px #81efc2;
+    }
+    .right{
+        border-radius: 0 10px 10px 0;
+        border-left: solid 2px #81efc2;
+    }
+}
+
+
+.option{
+    border-radius: 10px;
+    
+}
+
+
+//LOAD
+
+.load{
+    position: fixed;
+    top: 0;
+    left: 0;
+    min-width: 100vw;
+    min-height: 100vh;
+    background-color: rgba($color: #ffffff, $alpha: .9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    img{
+        opacity: .9;
+    }
+}

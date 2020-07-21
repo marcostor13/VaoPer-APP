@@ -2,7 +2,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-// import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/firestore';
 import { combineLatest } from 'rxjs';
 
 @Injectable({
@@ -12,7 +12,7 @@ export class ApiService {
 
   url: string = 'https://api.vaoperu.com/api/';
 
-  constructor(private http: HttpClient, private cookie: CookieService, private router: Router) { //private firestore: AngularFirestore
+  constructor(private http: HttpClient, private cookie: CookieService, private router: Router, private firestore: AngularFirestore) { //
     // if (window.location.href.indexOf('104.155.156.43') > -1 || window.location.href.indexOf('vaoperu') > -1) {
     //   this.url = 'https://api.vaoperu.com/api/';
     // } else {
@@ -31,111 +31,109 @@ export class ApiService {
   }
 
 
+  public createChat(data) {
+
+    const collectionChat = 'chat_' + data.useridOri + '_' + data.useridDes
+    const collectionChatReverse = 'chat_' + data.useridDes + '_' + data.useridOri
+
+    this.firestore.collection(collectionChat).get().subscribe(res => {
+      if (res.size == 0) {
+        this.firestore.collection(collectionChatReverse).get().subscribe(res => {
+          if (res.size == 0) {
+            this.c('CreateChat', 'condifito')
+            //CREATE CHAT
+            this.addDocument({
+              collection: collectionChat,
+              data: {
+                id: data.useridOri,
+                message: 'Hola necesito información',
+                date: new Date()
+              }
+            })
+            //ADD ID TO LISTS CHATS ORIGIN
+            const collectionListOri = 'chatlist_' + data.useridOri
+            this.addDocument({
+              collection: collectionListOri,
+              document: collectionChat,
+              data: {
+                id: collectionChat,
+                receptor: data.useridDes,
+                date: new Date()
+              }
+            })
+
+            //ADD ID TO LISTS CHATS ORIGIN
+            const collectionListDes = 'chatlist_' + data.useridDes
+            this.addDocument({
+              collection: collectionListDes,
+              document: collectionChat,
+              data: {
+                id: collectionChat,
+                receptor: data.useridOri,
+                date: new Date()
+              }
+            })
+          }
+        })
+      }
+    })
+
+  }
+
+  public sendMessage(data: any) {
+    const collectionChat = 'chat_' + data.useridOri + '_' + data.useridDes
+    const collectionChatReverse = 'chat_' + data.useridDes + '_' + data.useridOri
+
+    this.firestore.collection(collectionChat).get().subscribe(res => {
+      if (res.size == 0) {
+        this.firestore.collection(collectionChatReverse).get().subscribe(res => {
+          if (res.size > 0) {
+            //collectionChatReverse
+            this.addDocument({
+              collection: collectionChatReverse,
+              data: {
+                message: data.message,
+                id: data.useridOri,
+                date: new Date
+              }
+            })
+          }
+        })
+      } else {
+        //collectionChat
+        this.addDocument({
+          collection: collectionChat,
+          data: {
+            message: data.message,
+            id: data.useridOri,
+            date: new Date
+          }
+        })
+      }
+    })
+  }
 
 
-  // public createChat(data) {
-
-  //   const collectionChat = 'chat_' + data.useridOri + '_' + data.useridDes
-  //   const collectionChatReverse = 'chat_' + data.useridDes + '_' + data.useridOri
-
-  //   this.firestore.collection(collectionChat).get().subscribe(res => {
-  //     if (res.size == 0) {
-  //       this.firestore.collection(collectionChatReverse).get().subscribe(res => {
-  //         if (res.size == 0) {
-  //           this.c('CreateChat', 'condifito')
-  //           //CREATE CHAT
-  //           this.addDocument({
-  //             collection: collectionChat,
-  //             data: {
-  //               id: data.useridOri,
-  //               message: 'Hola necesito información',
-  //               date: new Date()
-  //             }
-  //           })
-  //           //ADD ID TO LISTS CHATS ORIGIN
-  //           const collectionListOri = 'chatlist_' + data.useridOri
-  //           this.addDocument({
-  //             collection: collectionListOri,
-  //             document: collectionChat,
-  //             data: {
-  //               id: collectionChat,
-  //               receptor: data.useridDes,
-  //               date: new Date()
-  //             }
-  //           })
-
-  //           //ADD ID TO LISTS CHATS ORIGIN
-  //           const collectionListDes = 'chatlist_' + data.useridDes
-  //           this.addDocument({
-  //             collection: collectionListDes,
-  //             document: collectionChat,
-  //             data: {
-  //               id: collectionChat,
-  //               receptor: data.useridOri,
-  //               date: new Date()
-  //             }
-  //           })
-  //         }
-  //       })
-  //     }
-  //   })
-
-  // }
-
-  // public sendMessage(data: any) {
-  //   const collectionChat = 'chat_' + data.useridOri + '_' + data.useridDes
-  //   const collectionChatReverse = 'chat_' + data.useridDes + '_' + data.useridOri
-
-  //   this.firestore.collection(collectionChat).get().subscribe(res => {
-  //     if (res.size == 0) {
-  //       this.firestore.collection(collectionChatReverse).get().subscribe(res => {
-  //         if (res.size > 0) {
-  //           //collectionChatReverse
-  //           this.addDocument({
-  //             collection: collectionChatReverse,
-  //             data: {
-  //               message: data.message,
-  //               id: data.useridOri,
-  //               date: new Date
-  //             }
-  //           })
-  //         }
-  //       })
-  //     } else {
-  //       //collectionChat
-  //       this.addDocument({
-  //         collection: collectionChat,
-  //         data: {
-  //           message: data.message,
-  //           id: data.useridOri,
-  //           date: new Date
-  //         }
-  //       })
-  //     }
-  //   })
-  // }
+  public addDocument(data: any) {
+    return this.firestore.collection(data.collection).add(data.data);
+  }
 
 
-  // public addDocument(data: any) {
-  //   return this.firestore.collection(data.collection).add(data.data);
-  // }
+  public createDoc(data: any) {
+    return this.firestore.collection(data.collection).doc(data.document).set(data.data);
+  }
 
+  public getDocument(data: any) {
+    return this.firestore.collection(data.collection).doc(data.document).snapshotChanges();
+  }
 
-  // public createDoc(data: any) {
-  //   return this.firestore.collection(data.collection).doc(data.document).set(data.data);
-  // }
+  public getDocuments(data: any) {
+    return this.firestore.collection(data.collection).snapshotChanges();
+  }
 
-  // public getDocument(data: any) {
-  //   return this.firestore.collection(data.collection).doc(data.document).snapshotChanges();
-  // }
-
-  // public getDocuments(data: any) {
-  //   return this.firestore.collection(data.collection).snapshotChanges();
-  // }
-
-  // public updateDocument(data: any) {
-  //   return this.firestore.collection(data.collection).doc(data.document).set(data.data);
-  // }
+  public updateDocument(data: any) {
+    return this.firestore.collection(data.collection).doc(data.document).set(data.data);
+  }
 
 
 

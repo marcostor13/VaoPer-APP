@@ -1,0 +1,42 @@
+<ion-header>
+  <div class="p-3 bg-color2 row justify-content-between m-0">
+      <button (click)="back()" class="btn5 pt-2 pb-2">Regresar</button>
+      <div class="row align-items-center m-0">
+          <img [routerLink]="['/']" width="60" src="/assets/img/logo.jpeg">
+      </div>
+  </div>
+</ion-header>
+
+<ion-content>
+  <div class="p-3 row m-0 pb-5 mb-5">
+
+      <div class="row m-0 col-12 justify-content-center">
+          <a href="tel:{{companyData.phone1}}" class="btn1 flex-1 pb-2 mr-2 font-700 text-center link-unstyled pt-2">LLAMADA</a>
+          <button (click)="message(companyData.userid, companyData.id)" class="btn2 flex-1 pb-2 font-700 pt-2">MENSAJE</button>
+      </div>
+
+      <div *ngFor="let prod of products" class="item row m-0 col-12 p-0 mt-4 overflow-hidden">
+          <div class="col-12 m-0 p-0 carouselproducts">
+              <ion-slides *ngIf="prod.images && prod.images.length > 0" pager="true" [options]="slideOpts" class="">
+                <ion-slide *ngFor="let it of prod.images; let i = index" class="">
+                    <div class="img-item2" [ngStyle]="{'background-image': 'url('+ it.image +')'}"></div>
+                </ion-slide>
+              </ion-slides>
+              <ng-container *ngIf="prod.image && (!prod.images || prod.images.length === 0)">
+                  <div *ngIf="prod.image.indexOf('data:image') > -1" class="img-item" [ngStyle]="{'background-image': 'url('+ prod.image +')'}"></div>
+                  <div *ngIf="prod.image.indexOf('data:image') === -1" class="img-item" [ngStyle]="{'background-image': 'url('+ urlBackEnd + getUriImage(prod.image) +')'}"></div>
+              </ng-container>
+            
+          </div>
+          <div class="ml-3 mt-2 col-12 m-0 p-0 pr-4">
+              <span class="f-11 font-700">{{prod.name}}</span>
+              <p class="f-10" *ngIf="prod.description && prod.description != '' && prod.description != 'null'">{{prod.description.substring(0,80)}}<ng-container *ngIf="prod.description.length > 79">...<span (click)='presentModal(prod.description)' class="cursor font-700 f-10 text-color2">ver más</span></ng-container></p> 
+              <div class="row m-0 col-11 justify-content-between p-0">
+                  <p *ngIf="prod.price && prod.price != 'null'" class="f-12 text-color2 font-700">S/ {{prod.price.replace(' SOLES', '') | number:'1.2-2'}}</p>
+              </div>
+          </div>
+      </div>
+
+  </div>
+</ion-content>
+

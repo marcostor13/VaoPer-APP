@@ -1,9 +1,55 @@
-<ion-header>
+<!-- <ion-header>
   <ion-toolbar>
     <ion-title>featured</ion-title>
   </ion-toolbar>
-</ion-header>
+</ion-header> -->
 
 <ion-content>
+  <div class="content bg-white">
 
+      <div *ngIf="response" class="col-12 m-0 mt-5">
+          <h5 class="text-center text-color2">{{response}}</h5>
+      </div>
+      
+      <div *ngIf="!isLoad" class="p-3 row m-0">
+          <div *ngFor="let companyData of companiesData"  class="item row m-0 col-12 p-0 mt-3">
+              <div [routerLink]="['/profile/'+companyData.id]" class="col-12 m-0 p-0">
+                  <div *ngIf="companyData.image.indexOf('data:image') > -1" class="img-item" [ngStyle]="{'background-image': 'url('+ companyData.image +')'}"></div>            
+                  <div *ngIf="companyData.image.indexOf('data:image') === -1" class="img-item" [ngStyle]="{'background-image': 'url('+ urlBackEnd + getUriImage(companyData.image) +')'}"></div>            
+                  <div *ngIf="!companyData.image" class="img-item"></div>            
+              </div>
+              <div class="p-3 col-12">
+                  <div [routerLink]="['/profile/'+companyData.id]" class="row m-0 justify-content-between">
+                      <span class="f-11 font-700">{{companyData.comercialname}}</span>
+                      <span class="f-11 font-700 text-color6">{{companyData.distance}}</span>
+                  </div>
+                  <div [routerLink]="['/profile/'+companyData.id]" class="row m-0 justify-content-between mt-2">
+                      <p class="f-10" *ngIf="companyData.address1 && companyData.address1 != '' && companyData.address1 != ''">{{companyData.address1.substring(0,80) || ''}}<ng-container *ngIf="companyData.address1.length > 79">...</ng-container></p>         
+                  </div>   
+                  <div class="row m-0 justify-content-between align-items-start">
+                      <div class="row m-0">
+                          <a href="tel:{{companyData.phone1}}"
+                              class="btn1 flex-1 pt-2 pb-2 mr-2 font-700 text-center link-unstyled">LLAMADA</a>
+                          <button (click)="message(companyData.userid, companyData.id)" class="btn2 flex-1 pt-2 pb-2 font-700">MENSAJE</button>
+                      </div>
+                      <div>
+                          <!-- <img (click)="addFeaturedCompanies(companyData.id, $event)" width="30" src="/assets/img/partials/star.svg" alt=""> -->
+                          <img (click)="share()" width="22" class="ml-2" src="/assets/img/partials/share.svg" alt="">
+                          <img (click)="deleteFeaturedCompanies(companyData.featuredid)" width="20" class="ml-2" src="/assets/img/partials/delete.svg" alt="">
+                      </div>
+                    
+                      <!-- <button (click)="addFeaturedCompanies(companyData.id, $event)" class="rounded-pill font-700 f-10 p-1 pl-2 pr-2 border-0 bg-color1">Agregar a favoritos</button>        -->
+                  </div>            
+              </div>
+          </div>
+
+      </div>
+
+      <div id="map"></div>      
+
+  </div>
+
+  <div *ngIf="isLoad" class="load">
+      <img src="/assets/img/partials/load.svg">
+  </div>
 </ion-content>
