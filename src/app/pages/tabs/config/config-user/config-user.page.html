@@ -1,0 +1,118 @@
+<!-- <ion-header>
+  <ion-toolbar>
+    <ion-title>config-user-provider</ion-title>
+  </ion-toolbar>
+</ion-header> -->
+
+<ion-content>
+  <!-- <div *ngIf="user.user.role == 'user'" class="content bg-white">
+    <app-header *ngIf="isDesktop" [categories]="categories" (actionMenu)="toogleMenuHome()"></app-header>
+  </div> -->
+  
+  <header *ngIf="user.user.role == 'admin' || user.user.role == 'user' && !isDesktop"
+    class="pt-3 pr-3 pl-3 pb-3 shadow-lg col-12 z-index1000 bg-white">
+    <button (click)="back()" class="btn1 pt-2 pb-2">Regresar</button>
+  </header>
+  
+  <header *ngIf="user.user.role == 'proveedor'" class="pt-3 pr-3 pl-3 pb-3 shadow-lg col-12 z-index1000 bg-white">
+    <button (click)="back()" class="btn1 pt-2 pb-2">Regresar</button>
+  </header>
+  
+  
+  
+  <div class="container-fluid p-5 mt-5">
+  
+  
+    <div class="row">
+      <div class="col-12 col-xl-4 row m-0 p-0 justify-content-center align-items-center">
+  
+        <div class="col-12 p-0 row m-0 justify-content-center">
+          <div class="userimage rounded-circle overflow-hidden" [style]="'background-image: url('+croppedImage+')'">
+            <input (change)="fileChangeEvent($event)" type="file" class="w-100 h-100 rounded-circle inputimage">
+          </div>
+        </div>
+
+        <div class="col-12 p-0 row m-0 mt-2 justify-content-center">
+          <label for="email" class="col-12 text-center">Correo</label>
+          <input type="text" class="text-center col-12 col-xl-6" value="{{user.user.email}}" disabled />
+        </div>
+        
+        <div class="col-12 p-0 row m-0 mt-2 justify-content-center">
+          <label for="username" class="col-12 text-center">Nombre</label>
+          <input type="text" class="text-center col-12 col-xl-6" [(ngModel)]="username" placeholder="Nombre de usuario" />
+        </div>
+  
+        <div class="col-12 p-0 row m-0 mt-2 justify-content-center">
+          <button (click)="saveUserName()" class="col-12 col-xl-5 btn1 pt-2 pb-2 pl-5 pr-5">Guardar</button>
+        </div>
+  
+        <div class="col-12 p-0 row m-0 mt-2 justify-content-center">
+          <p class="text-center text-color2">{{responseName}}</p>
+        </div>
+  
+      </div>
+  
+      <div class="col-12 col-xl-8 pl-0 pl-xl-5 pr-0 pr-xl-5 pb-5 mb-5 mb-xl-5 pb-xl-0  mt-4 mt-xl-0">
+        <h5 class="text-color2 font-700 text-center text-xl-left">Cambiar contraseña</h5>
+  
+        <div class="form-group mt-5">
+          <label>Contraseña actual</label>
+          <input type="password" class="pl-3 form-control" [(ngModel)]="currentpassword"
+            placeholder="Ingrese su contraseña actual" />
+        </div>
+        <div class="form-group">
+          <label>Contraseña nueva</label>
+          <input type="password" class="pl-3 form-control" [(ngModel)]="password" placeholder="Ingrese una contraseña" />
+        </div>
+        <div class="form-group">
+          <label>Repita la contraseña nueva</label>
+          <input type="password" class="pl-3 form-control" [(ngModel)]="repassword"
+            placeholder="Ingrese una contraseña" />
+        </div>
+  
+        <div class="form-group">
+          <button (click)="changePassword()" class="col-12 col-xl-3 btn1 pt-2 pb-2 pl-5 pr-5">Actualizar</button>
+        </div>
+  
+        <div class="form-group">
+          <p class="text-color2">{{responsePassword}}</p>
+        </div>
+  
+      </div>
+    </div>
+  
+  
+  </div>
+ 
+  
+  <div class="modal" *ngIf="isVisibleCortar">
+  
+    <div class="content-modal modal2 p-5">
+      <div class="header-modal row m-0 justify-content-between align-items-center">
+        <h6 class="title-modal font-700 text-color2">Cortar Imagen</h6>
+        <img (click)="handleCancelCortar()" width="20" src="assets/img/partials/close.svg">
+      </div>
+  
+      <div class="form-group mt-2">
+        <div class="row" style="margin-top: 5%;">
+          <div class="text-center col-md-8">
+            <h5>Cortar Imagen</h5>
+            <image-cropper [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true" [aspectRatio]="1 / 1"
+              [resizeToWidth]="0" format="png" (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()"
+              (cropperReady)="cropperReady()" (loadImageFailed)="loadImageFailed()"></image-cropper>
+          </div>
+          <div class="text-center col-md-4">
+            <h5>Previsualizar</h5>
+            <img [src]="croppedImage" />
+          </div>
+        </div>
+      </div>
+  
+      <div class="mt-3 row justify-content-end">
+        <button (click)="saveImageProfile()" class="btn1 pl-3 pr-3 pt-1 pb-1 mr-3">Terminar</button>
+      </div>
+  
+    </div>
+  
+  </div>
+</ion-content>

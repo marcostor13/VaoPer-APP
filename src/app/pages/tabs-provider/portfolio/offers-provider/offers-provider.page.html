@@ -1,9 +1,62 @@
-<ion-header>
+<!-- <ion-header>
   <ion-toolbar>
     <ion-title>offers-provider</ion-title>
   </ion-toolbar>
-</ion-header>
+</ion-header> -->
 
 <ion-content>
+  <header class="pt-3 pr-3 pl-3">
+      <button  (click)="back()" class="btn1 pt-2 pb-2">Regresar</button>
+  </header>
 
+  <hr class="linea">
+
+  <div class="row m-0 p-3 justify-content-center align-items-center">
+      <img [routerLink]="['edit-offers/0']" class="add" src="/assets/img/partials/add.svg">
+  </div>
+
+  <div class="p-3 row m-0  pb-5 mb-5">
+      <div *ngFor="let offer of offers" class="row m-0 col-12 col-lg-3 p-2 mt-2">
+          <div class="item row m-0 col-12 p-0">
+
+              <div class="col-12 m-0 p-0  row justify-content-center">
+                  <div class="img-item" [ngStyle]="{'background-image': 'url('+offer.image+')'}"></div>
+              </div>
+              <div class="ml-3 mt-2">
+                  <span class="f-11 font-700">{{offer.name}}</span>
+                  <div class="f-10" *ngIf="offer.description && offer.description != '' && offer.description != 'null'" [innerHTML]="offer.description.substring(0,60)"></div>
+                  <div *ngIf="offer.description && offer.description.length > 59"><span (click)='vermas(offer.description)' class="cursor font-700 f-10 text-color2">...ver más</span></div> 
+                  <p *ngIf="offer.price && offer.price != 'null'" class="f-12 text-color2 font-700 p-0 m-0">S/ {{offer.price | number:'1.2-2'}}</p>
+                  <p *ngIf="offer.enable == 1" class="f-10 text-color2 font-700">Activa</p>
+                  <p *ngIf="offer.enable == 0" class="f-10 text-color5 font-700">No activa</p>
+              </div>
+              <div class="row m-0 col-12 justify-content-between">
+                  <button [routerLink]="['edit-offers/'+offer.id]" class="btn3 mb-3 f-11 font-700 pt-2 pb-2">Editar</button>
+                  <button (click)="getOfferByIdAndDelete(offer.id)" class="btn4 mb-3 f-11 font-700 pt-2 pb-2">Eliminar</button>
+              </div>
+          </div>
+
+      </div>
+  </div>
+
+  <!-- <app-menu-provider active="portfolio"></app-menu-provider> -->
+
+  <nz-modal [(nzVisible)]="isVisibleModal" [nzTitle]="modalTitle" [nzContent]="modalContent" [nzFooter]="modalFooter"
+      (nzOnCancel)="handleCancel()">
+      <ng-template #modalTitle>
+          Descripción
+      </ng-template>
+
+      <ng-template #modalContent>
+          <p>{{currentDescription}}</p>
+      </ng-template>
+
+      <ng-template #modalFooter>
+          <button class="btn1 p-2 pl-3 pr-3" (click)="handleCancel()">Cerrar</button>
+      </ng-template>
+  </nz-modal>
+
+  <div *ngIf="isLoad" class="load">
+      <img src="/assets/img/partials/load.svg">
+  </div>
 </ion-content>

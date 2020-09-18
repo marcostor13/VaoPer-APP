@@ -3,6 +3,8 @@ import { ApiService } from 'src/app/services/api.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { GeneralService } from 'src/app/services/general.service';
+import { ModalPage } from 'src/app/pages/modal/modal.page';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-products-provider',
@@ -21,27 +23,23 @@ export class ProductsProviderPage implements OnInit {
   isVisibleModal: Boolean = false
   currentDescription: String = ''
 
-  constructor(public route: ActivatedRoute, private router: Router, private api: ApiService, private cookie: CookieService, private general: GeneralService) {
+  constructor(public route: ActivatedRoute, private router: Router, private api: ApiService, private cookie: CookieService, private general: GeneralService, public modalController: ModalController) {
   }
 
   ngOnInit(): void {
     this.validateSession()
+    
+  }
+
+  ionViewWillEnter() {
     this.getProducts()
   }
 
   validateSession() {
-
-    if (!this.cookie.get('ud') || this.cookie.get('ud') == '') {
-      this.router.navigate(['/login'])
-    } else {
-      this.user = JSON.parse(this.cookie.get('ud'))
-      this.api.c('user', this.user)
-      if (this.user.user.role !== "proveedor" && this.user.user.role !== "admin") {
-        this.router.navigate(['/'])
-      }
+    if (localStorage.getItem('ud')) {
+      this.user = JSON.parse(localStorage.getItem('ud'))    
     }
   }
-
 
   getProducts() {
 
@@ -147,6 +145,20 @@ export class ProductsProviderPage implements OnInit {
   vermas(text) {
     this.currentDescription = text
     this.showModal()
+  }
+
+  async presentModal(content) {
+    const modal = await this.modalController.create({
+      component: ModalPage,
+      cssClass: 'modal-class',
+      componentProps: {
+        'title': 'Descripción',
+        'content': content,
+        'modal': this
+      }
+
+    });
+    return await modal.present();
   }
 
 }

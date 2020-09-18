@@ -1,7 +1,10 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">vaoperu</string>
-    <string name="title_activity_main">vaoperu</string>
-    <string name="package_name">io.ionic.starter</string>
-    <string name="custom_url_scheme">io.ionic.starter</string>
+    <string name="app_name">Vaoperu</string>
+    <string name="title_activity_main">Vaoperu</string>
+    <string name="package_name">com.vaoperu.app</string>
+    <string name="custom_url_scheme">com.vaoperu.app</string>
+    <string name="facebook_app_id">663809824221994</string>
+    <string name="fb_login_protocol_scheme">fb663809824221994</string>
+    <string name="server_client_id">216189303909-di5rc6rrp30hni4h5uqegfh0oi5h5tsf.apps.googleusercontent.com</string>
 </resources>

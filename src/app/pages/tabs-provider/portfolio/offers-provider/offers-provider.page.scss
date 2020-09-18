@@ -1,0 +1,39 @@
+@import './../../../../../styles/variables';
+
+
+.linea{
+    border-bottom: solid 3px $color7;
+}
+
+
+.item{
+    -webkit-box-shadow: 1px 3px 8px 5px rgba(194,194,194,1);
+    -moz-box-shadow: 1px 3px 8px 5px rgba(194,194,194,1);
+    box-shadow: 1px 3px 8px 5px rgba(194,194,194,1);
+    border-radius: 10px;
+    .img-item{
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        border-radius: 10px 10px 0 0;             
+        min-width: 23.1vw;        
+        max-width: 23.1vw;        
+        max-height: 23.1vw;        
+        min-height: 23.1vw;
+    }
+}
+
+.add{
+    max-width: 40px;
+}
+
+@media (max-width: 992px) {
+    .item{
+        .img-item{    
+            min-width: 85vw;           
+            max-width: 85vw;        
+            max-height: 85vw;        
+            min-height: 85vw;
+        }
+    }
+}

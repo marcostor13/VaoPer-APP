@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { FeaturedPageRoutingModule } from './featured-routing.module';
 
 import { FeaturedPage } from './featured.page';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 
 @NgModule({
   imports: [
@@ -15,6 +16,9 @@ import { FeaturedPage } from './featured.page';
     IonicModule,
     FeaturedPageRoutingModule
   ],
-  declarations: [FeaturedPage]
+  declarations: [FeaturedPage],
+  providers: [  
+    SocialSharing 
+  ],
 })
 export class FeaturedPageModule {}

@@ -39,7 +39,8 @@
             </div>
             <div class="ml-3 mt-2 col-12 m-0 p-0">
                 <span class="f-11 font-700">{{prod.name}}</span>
-                <p class="f-10 pr-3" *ngIf="prod.description && prod.description != '' && prod.description != 'null'">{{prod.description.substring(0,80)}}<ng-container *ngIf="prod.description.length > 79">...<span (click)='vermas(prod.description)' class="cursor font-700 f-10 text-color2">ver más</span></ng-container></p> 
+                <div class="f-10 pr-3" *ngIf="prod.description && prod.description != '' && prod.description != 'null'" [innerHTML]="prod.description.substring(0,60)"></div> 
+                <div *ngIf="prod.description && prod.description.length > 59"><span (click)='presentModal(prod.description)' class="cursor font-700 f-10 text-color2">...ver más</span></div>
                 <div class="row m-0 col-11 justify-content-between p-0">
                     <p *ngIf="prod.price && prod.price != 'null'" class="f-12 text-color2 font-700">S/ {{prod.price | number:'1.2-2'}}</p>
                     <div class="row m-0 mt-2 justify-content-between col-12 p-0">

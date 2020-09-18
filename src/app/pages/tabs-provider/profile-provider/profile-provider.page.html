@@ -15,8 +15,7 @@
 
               <div class="">
 
-                  <div *ngIf="companyData.image && companyData.image.indexOf('data:image') > -1" class="imgProfileEdit col-12" [ngStyle]="{'background-image': 'url('+companyData.image+')'}"></div>      
-                  <div *ngIf="companyData.image && companyData.image.indexOf('data:image') === -1" class="imgProfileEdit col-12" [ngStyle]="{'background-image': 'url('+urlBackEnd + getUriImage(companyData.image)+')'}"></div>      
+                  <div *ngIf="companyData.image" class="imgProfileEdit col-12" [ngStyle]="{'background-image': 'url('+companyData.image+')'}"></div>      
 
                   <div *ngIf="!companyData.image" class="main-photo row m-0 justify-content-center align-items-center">
                       <p class="font-700">Foto de perfil</p>

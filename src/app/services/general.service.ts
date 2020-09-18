@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { CookieService } from 'ngx-cookie-service';
 
+import * as moment from 'moment';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -10,9 +12,11 @@ export class GeneralService {
   user: any;
 
   constructor(public api: ApiService, public cookie: CookieService) {
-    if (this.cookie.get('ud') && this.cookie.get('ud') != '') {
-      this.user = JSON.parse(this.cookie.get('ud'))
+    if (localStorage.getItem('ud') && localStorage.getItem('ud') != '') {
+      this.user = JSON.parse(localStorage.getItem('ud'))
     }
+
+    moment.locale("es");
   }
 
   httpBuildQuery(params) {
@@ -119,6 +123,14 @@ export class GeneralService {
     }
 
 
+  }
+
+  apertura(start, end) {
+    let today = moment().format('YYYY-MM-DD');
+    let betweenStart = today + ' ' + start;
+    let betweenEnd = today + ' ' + end;
+    let time = moment().isBetween(betweenStart, betweenEnd)
+    return time
   }
 
 

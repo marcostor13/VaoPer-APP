@@ -7,7 +7,11 @@ const routes: Routes = [
   {
     path: '',
     component: ConfigPage
+  },  {
+    path: 'config-user',
+    loadChildren: () => import('./config-user/config-user.module').then( m => m.ConfigUserPageModule)
   }
+
 ];
 
 @NgModule({

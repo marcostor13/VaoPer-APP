@@ -24,6 +24,8 @@ export class ChatPage implements OnInit {
   scrollContainer: any;
   scrollContainer2: any;
 
+  noti: any = []
+
   @ViewChild('scrollMe', { static: false }) scrollMe: ElementRef;
   @ViewChild('scrollMe2', { static: false }) scrollMe2: ElementRef;
 
@@ -40,8 +42,18 @@ export class ChatPage implements OnInit {
       this.id = '0'
     }
 
+    //get notifications
+    firestore.collection('chatnotification_' + this.user.user.id).valueChanges().subscribe((res: any) => {
+
+      this.api.c('Notifications', res)
+
+      this.noti = res;
+
+
+    })
+
     //get Chats
-    this.chats = firestore.collection('chatlist_' + this.user.user.id).valueChanges();
+    this.chats = firestore.collection('chatlist_' + this.user.user.id, ref=> ref.orderBy('date', 'desc') ).valueChanges();
 
     this.chats.forEach((res) => {
       this.api.c('Chats', res)
@@ -54,47 +66,51 @@ export class ChatPage implements OnInit {
     moment.locale("es");
   }
 
+  invertChatid(id){
+
+    let ids= id.split('_')
+
+    return ids[0] + '_' + ids[2] + '_' + ids[1]
+
+  }
+
+  getNotification(id) {
+    
+
+    var notifi = 0;
+    for (let index = 0; index < this.noti.length; index++) {
+      const element = this.noti[index];
+
+      if (element.id == this.invertChatid(id)) {
+        notifi++
+      }
+
+    }
+    return notifi
+
+  }
+
   ngAfterViewInit() {
-    this.scrollContainer = this.scrollMe.nativeElement;
-    this.scrollContainer2 = this.scrollMe2.nativeElement;
+    this.scrollContainer = this.scrollMe ? this.scrollMe.nativeElement: false;
+    this.scrollContainer2 = this.scrollMe2 ? this.scrollMe2.nativeElement : false;
   }
 
 
-  ngOnInit(): void {
-
-    //Create Chat
-    // this.api.createChat({
-    //   collection: 'chats',
-    //   token: this.user.token,
-    //   useridOri: this.id.split('-')[0],
-    //   useridDes: this.id.split('-')[1]
-    // })
-
-    //SEND MESSAGE    
-
-    // this.api.sendMessage({
-    //   message: 'Mensaje de 2 para 1',
-    //   useridOri: 2,
-    //   useridDes: 1
-    // })
+  ngOnInit(): void {  
 
     if (this.id != 0) {
-      this.getMessages(this.id)
+      setTimeout(()=>{
+        this.getMessages(this.id)
+      }, 2000)
     }
-
-
-    // setTimeout(()=>{
-    //   this.scrollToBottom()
-    // }, 4000)
-
 
   }
 
   validateSession() {
-    if (!this.cookie.get('ud') || this.cookie.get('ud') == '') {
+    if (!localStorage.getItem('ud') || localStorage.getItem('ud') == '') {
       this.router.navigate(['/login'])
     } else {
-      this.user = JSON.parse(this.cookie.get('ud'))
+      this.user = JSON.parse(localStorage.getItem('ud'))
       this.api.c('user', this.user)
     }
   }
@@ -125,16 +141,31 @@ export class ChatPage implements OnInit {
 
   }
 
-  getMessages(idReceptor) {
+  
 
-    var self = this;
+  async getMessages(idReceptor) {
 
+    var self = this
     this.listChatActive = false
+    let collection = 'chat_' + this.user.user.id + '_' + idReceptor
+    let collectionReverse = 'chat_' + idReceptor + '_' + this.user.user.id
+    let collectionChatNotification = 'chatnotification_' + this.user.user.id
 
-    let collection = 'chat_' + this.user.user.id + '_' + idReceptor;
-    let collectionReverse = 'chat_' + idReceptor + '_' + this.user.user.id;
+    this.firestore.collection(collection).get().subscribe(async res => {
 
-    this.firestore.collection(collection).get().subscribe(res => {
+      this.firestore.collection(collectionChatNotification).get().subscribe((res: any) => {
+
+        res.docs.forEach(async (doc:any) => {
+          this.firestore.collection(collectionChatNotification).doc(doc.id).get().subscribe(async (result:any)=>{
+            
+            if (result.data().id == 'chat_' + idReceptor + '_' + this.user.user.id){
+              await this.firestore.collection(collectionChatNotification).doc(result.id).delete()
+            }
+          })
+          
+        });
+
+      })
 
       if (res.size != 0) {
         this.messages = this.firestore.collection(collection, ref => ref.orderBy('date')).valueChanges()
@@ -169,20 +200,27 @@ export class ChatPage implements OnInit {
   }
 
   scrollToBottom(): void {
-    this.scrollContainer = this.scrollMe.nativeElement;
-    this.scrollContainer2 = this.scrollMe2.nativeElement;
+    this.scrollContainer = this.scrollMe ? this.scrollMe.nativeElement : false;
+    this.scrollContainer2 = this.scrollMe2 ? this.scrollMe2.nativeElement : false;
 
-    this.scrollContainer.scroll({
-      top: this.scrollContainer.scrollHeight,
-      left: 0,
-      behavior: 'smooth'
-    });
+    if (this.scrollContainer){
 
-    this.scrollContainer2.scroll({
-      top: this.scrollContainer2.scrollHeight,
-      left: 0,
-      behavior: 'smooth'
-    });
+      this.scrollContainer.scroll({
+        top: this.scrollContainer.scrollHeight,
+        left: 0,
+        behavior: 'smooth'
+      });
+    }
+
+
+    if (this.scrollContainer2){
+      this.scrollContainer2.scroll({
+        top: this.scrollContainer2.scrollHeight,
+        left: 0,
+        behavior: 'smooth'
+      });
+    }
+
   }
 
 

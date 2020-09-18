@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from 'src/app/services/api.service';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
+import { Event as NavigationEvent } from "@angular/router";
+import { filter } from "rxjs/operators";
+import { NavigationStart } from "@angular/router";
+
 
 @Component({
   selector: 'app-login',
@@ -15,17 +19,43 @@ export class LoginPage implements OnInit {
   response: any = ''
   isLogged: Boolean = false
   isPassword: Boolean = true
+  loggedIn: boolean;
+  terminos: Boolean = false
+  username: string;
+  picture;
+  name;
 
-  constructor(private router: Router, private api: ApiService, private cookie: CookieService) {
+  constructor(
+    private router: Router, 
+    private api: ApiService, 
+    private cookie: CookieService, 
+    ) {
 
+
+    router.events
+      .pipe(       
+        filter(
+          (event: NavigationEvent) => {
+            return (event instanceof NavigationStart);
+          }
+        )
+      )
+      .subscribe(
+          (event: NavigationStart) => {
+
+            this.router.navigate(['/tabs'])
+
+          }
+        )
   }
 
   ngOnInit(): void {
-    this.verifySession();
+    // this.verifySession();
+    
   }
-
+  
   verifySession() {
-    if (this.cookie.get('ud') != '') {
+    if (localStorage.getItem('ud') != '') {
       this.isLogged = true;
       this.router.navigate(['/tabs']);
     }
@@ -40,27 +70,26 @@ export class LoginPage implements OnInit {
       service: 'login'
     }
     this.api.api(data).subscribe((result:any) => {
-      this.cookie.set('ud', JSON.stringify(result));
+
+      localStorage.setItem('ud', JSON.stringify(result))
+      // this.cookie.set('ud', JSON.stringify(result));
 
       if(result.user.role_id == 2){
-        this.router.navigate(['/tabs-provider']);
+        window.location.href ='/tabs-provider'
+        // this.router.navigate(['/tabs-provider']);
       }else{
-        this.router.navigate(['/tabs']);
+        window.location.href = '/tabs'
+        // this.router.navigate(['/tabs']);
       }
 
     },
-      error => {
-        if (error.status == 401) {
-          this.response = 'Error en el correo o contraseña'
-        } else {
-          this.response = JSON.stringify(error);
-        }
-
-      },
-      () => {
-        // 'onCompleted' callback.
-        // No errors, route to new page here
-      });
+    error => {
+      if (error.status == 401) {
+        this.response = 'Error en el correo o contraseña'
+      } else {
+        this.response = JSON.stringify(error);
+      }
+    });
 
   }
 
@@ -71,5 +100,6 @@ export class LoginPage implements OnInit {
       this.isPassword = true
     }
   }
+
 
 }

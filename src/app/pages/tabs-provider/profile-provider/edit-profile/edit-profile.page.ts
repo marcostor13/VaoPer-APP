@@ -4,6 +4,9 @@ import { ApiService } from 'src/app/services/api.service';
 import { CookieService } from 'ngx-cookie-service';
 import { GeneralService } from 'src/app/services/general.service';
 import { ImageCroppedEvent } from 'ngx-image-cropper';
+import { AngularFireStorage } from '@angular/fire/storage';
+import { map, finalize } from "rxjs/operators";
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-edit-profile',
@@ -32,10 +35,23 @@ export class EditProfilePage implements OnInit {
   siteweb: any = ''
   legalname: any = ''
   address: any = ''
+  addressDisplay: any = ''
+  responseModal: any = ''
+  
   ruc: any = ''
   district: any = ''
   imageCrop: any = ''
   urlBackEnd: any = this.general.getUrlImages('profile');
+
+
+  //Upload
+
+  title = "cloudsSorage";
+  selectedFile: File = null;
+  downloadURL: Observable<string>;
+  previewImage: string | undefined = '';
+  previewVisible = false;
+  profileUrl: Observable<string | null>;
 
 
   //MODAL
@@ -53,10 +69,15 @@ export class EditProfilePage implements OnInit {
   subcategories: any = []
   categoryCompanies: any = []
 
+  delivery: any = false
+  tienda: any = false
+  starthour: any = ''
+  endhour: any = ''
+
   isLoad: Boolean = false
 
 
-  constructor(public route: ActivatedRoute, private router: Router, private api: ApiService, private cookie: CookieService, private general: GeneralService) {
+  constructor(public route: ActivatedRoute, private router: Router, private api: ApiService, private cookie: CookieService, private general: GeneralService, private storage: AngularFireStorage) {
     this.id = this.route.snapshot.paramMap.get('id')
   }
 
@@ -68,19 +89,20 @@ export class EditProfilePage implements OnInit {
 
     this.getCategoriesAndSubcategories()
     this.getCategoriesCompanies()
+    this.getSections()
 
   }
 
   validateSession() {
-    if (!this.cookie.get('ud') || this.cookie.get('ud') == '') {
-      this.router.navigate(['/login'])
+    if (localStorage.getItem('ud')) {
+      this.user = JSON.parse(localStorage.getItem('ud'))
     } else {
-      this.user = JSON.parse(this.cookie.get('ud'))
-      this.api.c('user', this.user)
-      if (this.user.user.role !== "proveedor" && this.user.user.role !== "admin") {
-        this.router.navigate(['/'])
-      }
+      window.location.href = '/login'
     }
+  }
+
+  back() {
+    window.history.back()
   }
 
 
@@ -115,6 +137,7 @@ export class EditProfilePage implements OnInit {
         this.legalname = res.data.legalname != 'null' ? res.data.legalname : ''
         this.ruc = res.data.ruc != 'null' ? res.data.ruc : ''
         this.address = res.data.address1 != 'null' ? res.data.address1 : ''
+        this.addressDisplay = res.data.address2 != 'null' ? res.data.address2 : ''
         this.district = res.data.district != 'null' ? res.data.district : ''
       } else {
         this.api.c('getProfileByID false', res)
@@ -148,6 +171,7 @@ export class EditProfilePage implements OnInit {
     formData.append('siteweb', this.siteweb)
     formData.append('legalname', this.legalname)
     formData.append('address', this.address)
+    formData.append('address2', this.addressDisplay)
     formData.append('ruc', this.ruc)
     formData.append('district', this.district)
 
@@ -187,6 +211,7 @@ export class EditProfilePage implements OnInit {
           this.siteweb = ''
           this.legalname = ''
           this.address = ''
+          this.addressDisplay = ''
           this.ruc = ''
           this.district = ''
         }
@@ -278,29 +303,34 @@ export class EditProfilePage implements OnInit {
 
   addCategories() {
 
-    if (this.category == '') {
-      return false;
+    if (this.categoryCompanies.length > 4) {
+      this.responseModal = 'No puede agregar más de 5 categorías'
+    } else {
+      if (this.category == '') {
+        return false;
+      }
+
+      let data = {
+        service: 'add-categories-to-users',
+        categoryid: this.category,
+        subcategoryid: this.subcategory,
+        companyid: this.id,
+        token: this.user.token,
+      }
+      this.api.api(data).subscribe((res: any) => {
+        this.api.c('addCategories', res)
+        if (res.status) {
+          this.getCategoriesCompanies()
+          this.isVisibleModal = false
+        } else {
+          this.api.c('addCategories status false', res)
+        }
+      },
+        error => {
+          this.api.c('addCategories error', error)
+        })
     }
 
-    let data = {
-      service: 'add-categories-to-users',
-      categoryid: this.category,
-      subcategoryid: this.subcategory,
-      companyid: this.id,
-      token: this.user.token,
-    }
-    this.api.api(data).subscribe((res: any) => {
-      this.api.c('addCategories', res)
-      if (res.status) {
-        this.getCategoriesCompanies()
-        this.isVisibleModal = false
-      } else {
-        this.api.c('addCategories status false', res)
-      }
-    },
-      error => {
-        this.api.c('addCategories error', error)
-      })
 
   }
 
@@ -331,6 +361,9 @@ export class EditProfilePage implements OnInit {
     // this.api.c('fileChangeEvent', event)
   }
   imageCropped(event: ImageCroppedEvent) {
+
+    this.api.c('ImageCropped', event)
+
     this.croppedImage = event.base64;
 
   }
@@ -354,8 +387,22 @@ export class EditProfilePage implements OnInit {
   }
 
   handleOkCortar(): void {
-    // this.api.c('croppedImage', this.croppedImage)
+
     this.isVisibleCortar = false
+    const imageName = 'name.png';
+    const imageBlob = this.dataURItoBlob(this.croppedImage);
+    this.croppedImage = new File([imageBlob], imageName, { type: 'image/png' });
+  }
+
+  dataURItoBlob(dataURI) {
+    const byteString = window.atob(dataURI.replace(/^data:image\/(png|jpeg|jpg);base64,/, ''));
+    const arrayBuffer = new ArrayBuffer(byteString.length);
+    const int8Array = new Uint8Array(arrayBuffer);
+    for (let i = 0; i < byteString.length; i++) {
+      int8Array[i] = byteString.charCodeAt(i);
+    }
+    const blob = new Blob([int8Array], { type: 'image/png' });
+    return blob;
   }
 
   handleCancelCortar(): void {
@@ -363,7 +410,103 @@ export class EditProfilePage implements OnInit {
   }
 
 
+
+
+  handleUpload = (item: any = null) => {
+
+    this.isLoad = true
+
+    if (this.croppedImage && this.croppedImage != '') {
+
+      this.api.c('handleUpload', this.croppedImage)
+
+      var n = Date.now();
+      const filePath = `profile/${n}`;
+      const fileRef = this.storage.ref(filePath);
+      const task = this.storage.upload(`profile/${n}`, this.croppedImage);
+      task
+        .snapshotChanges()
+        .pipe(
+          finalize(() => {
+            this.downloadURL = fileRef.getDownloadURL();
+            this.downloadURL.subscribe(url => {
+              if (url) {
+                this.croppedImage = url;
+                this.saveProfile()
+              }
+              console.log('fb', url);
+
+            });
+          })
+        )
+        .subscribe(url => {
+          if (url) {
+            // console.log('url subscribe', url);
+          }
+        });
+    } else {
+      this.saveProfile()
+    }
+
+
+  }
+
+
+  getSections() {
+    this.isLoad = true
+    let data = {
+      userid: this.user.user.id,
+      token: this.user.token,
+      service: 'get-sections'
+    }
+    this.api.api(data).subscribe((result: any) => {
+      this.api.c('getSections', result)
+      this.isLoad = false
+      if (result.status) {
+        if (result.data.delivery == 1) {
+          this.delivery = true
+        }
+        if (result.data.tienda == 1) {
+          this.tienda = true
+        }
+        if (result.data.starthour) {
+          this.starthour = result.data.starthour
+        }
+        if (result.data.endhour) {
+          this.endhour = result.data.endhour
+        }
+      }
+    },
+      error => {
+        this.api.c('Error getSections', error)
+
+      });
+  }
+
+  onChangeDelivery() {
+    this.isLoad = true
+    let data = {
+      userid: this.user.user.id,
+      token: this.user.token,
+      delivery: this.delivery,
+      tienda: this.tienda,
+      starthour: this.starthour,
+      endhour: this.endhour,
+      service: 'save-sections'
+    }
+    this.api.api(data).subscribe((result: any) => {
+      this.isLoad = false
+      this.api.c('saveSections', result)
+    },
+      error => {
+        this.api.c('Error saveSections', error)
+
+      });
+  }
+
+
 }
+
 
 
 

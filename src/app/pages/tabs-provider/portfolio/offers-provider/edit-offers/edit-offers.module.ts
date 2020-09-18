@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
 import { EditOffersPageRoutingModule } from './edit-offers-routing.module';
-
+import { ImageCropperModule } from 'ngx-image-cropper';
 import { EditOffersPage } from './edit-offers.page';
 
 @NgModule({
@@ -13,7 +13,8 @@ import { EditOffersPage } from './edit-offers.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    EditOffersPageRoutingModule
+    EditOffersPageRoutingModule,
+    ImageCropperModule
   ],
   declarations: [EditOffersPage]
 })

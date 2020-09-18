@@ -16,7 +16,10 @@ export class ConfigPage implements OnInit {
   isDesktop: any;
   isLoad: any = false
   categories: any;
-
+  toogleAnuncio: any = false; 
+  name: any = '';
+  number: any = '';
+  response: string = '';
   eventsSubject: Subject<void> = new Subject<void>();
 
   constructor(private router: Router, private api: ApiService, private cookie: CookieService) {
@@ -26,15 +29,37 @@ export class ConfigPage implements OnInit {
   ngOnInit(): void {
     this.validateSession()
     this.getCategoriesAndSubcategories()
+    
+  }
+
+  sendAnuncio(){
+    this.isLoad = true;
+
+    let data = {
+      name: this.name,
+      number: this.number,
+      service: 'save-anuncio'
+    }
+    this.api.api(data).subscribe(result => {
+      this.isLoad = false
+      this.response = 'Gracias, nos contactaremos en breve'
+      this.name = ''
+      this.number = ''
+      this.api.c('sendAnuncio result', result)      
+    },
+      error => {
+        this.api.c('Error sendAnuncio', error)
+      });
+  }
+
+  toogle(){
+    this.toogleAnuncio = this.toogleAnuncio ? false: true
   }
 
   validateSession() {
-    if (this.cookie.get('ud') && this.cookie.get('ud') != '') {
-      this.user = JSON.parse(this.cookie.get('ud'))
-      this.api.c('user', this.user)
-      if (this.user.user.role === 'proveedor') {
-        this.router.navigate(['/proveedor'])
-      }
+    if (localStorage.getItem('ud')) {
+      this.user = JSON.parse(localStorage.getItem('ud'))
+      this.getDataUSerById()
     }
   }
 
@@ -56,20 +81,50 @@ export class ConfigPage implements OnInit {
 
   }
 
+  getDataUSerById() {
+
+    this.isLoad = true;
+
+    let data = {
+      service: 'get-data-user-by-id',
+      userid: this.user.user.id,
+      token: this.user.token
+    }
+
+    this.api.api(data).subscribe((result:any) => {
+      this.api.c('getDataUSerById', result)
+      this.userimage = result.imageprofile
+      this.isLoad = false
+    },
+      error => {
+        this.api.c('Error getDataUSerById', error)
+      });
+
+  }
+
+
+
+  
+
   logout() {
+    this.isLoad = true
+
     let data = {
       userid: this.user.user.id,
       token: this.user.token,
       service: 'logout'
     }
     this.api.api(data).subscribe(result => {
-      this.cookie.set('ud', '')
-      this.router.navigate(['/login'])
+      localStorage.removeItem('ud')
+      setTimeout(_=>{
+        this.isLoad = false
+        this.router.navigate(['/login'])
+      }, 1000)
     },
-      error => {
+    error => {
         this.api.c('Error logout', error)
         if (error.status == 401) {
-          this.cookie.set('ud', '')
+          localStorage.removeItem('ud')
           this.router.navigate(['/login'])
         }
 

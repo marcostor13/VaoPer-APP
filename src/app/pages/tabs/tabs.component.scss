@@ -1,3 +1,22 @@
 .ionicon{
     color: #808080 !important;
 }
+
+
+.bagge{
+    position: absolute;
+    z-index: 1000;
+    background-color: red;
+    min-width: 20px;
+    min-height: 20px;
+    color: white; 
+    top: 8px;
+    left: 25%;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 500;
+
+
+}

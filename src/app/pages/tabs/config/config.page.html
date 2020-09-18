@@ -11,16 +11,30 @@
 
 <ion-content>
   <div class="row m-0 p-3">
-    
-      <div class="option p-3 col-12 bg-color7">
-          <p *ngIf="user" (click)="logout()"  class="m-0 p-0 font-700">Acceso a proveedores</p>
-          <p *ngIf="!user" [routerLink]="['/login']"  class="m-0 p-0 font-700">Acceso a proveedores</p>
-      </div>
 
-      <div class="option p-3 col-12 bg-color7 mt-2">
-          <p *ngIf="user" (click)="logout()" class="m-0 p-0 font-700">Cerrar Sesión</p>
-          <p *ngIf="!user" [routerLink]="['/login']"  class="m-0 p-0 font-700">Iniciar Sesión</p>
-      </div>
+    <div *ngIf="user" class="option p-3 col-12 bg-color7">
+        <p [routerLink]="['config-user']" class="m-0 p-0 font-700">Opciones de usuario</p>
+    </div>
+
+    <div *ngIf="user" class="option p-3 col-12 bg-color7 mt-2">
+        <p (click)="toogle()" class="m-0 p-0 font-700">Anuncia tu negocio</p>
+        <div *ngIf="toogleAnuncio">
+            <input [(ngModel)]="name" class="col-12 border rounded mt-2 pt-2 pb-2" type="text" placeholder="Nombre">
+            <input [(ngModel)]="number" class="col-12 border rounded mt-2 pt-2 pb-2" type="number" placeholder="Teléfono">
+            <button (click)="sendAnuncio()" class="col-12 btn1 rounded mt-2 pt-2 pb-2">Enviar</button>
+            <p class="text-center col-12 m-0 text-color2 mt-2">{{response}}</p>
+        </div>
+    </div>
+    
+    <div class="option p-3 col-12 bg-color7 mt-2">
+        <p *ngIf="user" (click)="logout()"  class="m-0 p-0 font-700">Acceso a proveedores</p>
+        <p *ngIf="!user" [routerLink]="['/login']"  class="m-0 p-0 font-700">Acceso a proveedores</p>
+    </div>
+
+    <div class="option p-3 col-12 bg-color7 mt-2">
+        <p *ngIf="user" (click)="logout()" class="m-0 p-0 font-700">Cerrar Sesión</p>
+        <p *ngIf="!user" [routerLink]="['/login']"  class="m-0 p-0 font-700">Iniciar Sesión</p>
+    </div>
 
           
   </div>

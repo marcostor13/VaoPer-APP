@@ -40,19 +40,20 @@ export class ProductsPage implements OnInit {
 
   ngOnInit(): void {
     this.validateSession()
+    
+  }
+
+  ionViewWillEnter() {
     this.getProducts()
     this.getCompanyData()
   }
 
   validateSession() {
 
-    if (this.cookie.get('ud') && this.cookie.get('ud') != '') {
-      this.user = JSON.parse(this.cookie.get('ud'))
-      this.api.c('user', this.user)
-      if (this.user.user.role === "proveedor") {
-        this.router.navigate(['/provider'])
-      }
+    if (localStorage.getItem('ud')) {
+      this.user = JSON.parse(localStorage.getItem('ud'))
     }
+
   }
 
 
@@ -176,19 +177,23 @@ export class ProductsPage implements OnInit {
 
 
 
-  message(receptorid, companyDataID) {
+  message(receptorid, companyDataID, phone1) {
 
-    if (!this.user) {
-      this.router.navigate(['/login'])
-    } else {
-      if (this.user.user.id != receptorid) {
-
-        if (this.createChat(this.user.user.id, receptorid)) {
-          this.router.navigate(['/chat-provider/' + receptorid])
-        }
-
-      }
+    if (phone1) {
+      window.location.href = `https://api.whatsapp.com/send?phone=51${phone1}&text=Hola, necesito más información`
     }
+
+    // if (!this.user) {
+    //   this.router.navigate(['/login'])
+    // } else {
+    //   if (this.user.user.id != receptorid) {
+
+    //     if (this.createChat(this.user.user.id, receptorid)) {
+    //       this.router.navigate(['/tabs/chat/' + receptorid])
+    //     }
+
+    //   }
+    // }
 
     this.general.saveEvent('message', companyDataID)
 

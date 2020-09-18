@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "790430105971",
+    "firebase_url": "https://vaoperu-1e949.firebaseio.com",
+    "project_id": "vaoperu-1e949",
+    "storage_bucket": "vaoperu-1e949.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:790430105971:android:3fe16f97d9206d17ea4506",
+        "android_client_info": {
+          "package_name": "com.vaoperu.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "790430105971-c1r0fjfo5rtnlsd412akg5a15avhqg5t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.vaoperu.app",
+            "certificate_hash": "f1a869ff343666a562e28561dacdf2edf6dbb4fc"
+          }
+        },
+        {
+          "client_id": "790430105971-b5abvg5tj9tqk1b0tqpjnf6peamnp86u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJGh7KVPUbG5DuvHhD1g8LrK9WHi_MfQo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "790430105971-b5abvg5tj9tqk1b0tqpjnf6peamnp86u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -62,15 +62,11 @@ export class DashboardPage implements OnInit {
   }
 
   validateSession() {
-    if (this.cookie.get('ud') && this.cookie.get('ud') != '') {
-      this.user = JSON.parse(this.cookie.get('ud'))
-      this.api.c('user', this.user)
-      this.getImageProfile()
-      if (this.user.user.role !== 'proveedor' && this.user.user.role !== 'admin') {
-        this.router.navigate(['/'])
-      }
+    if (localStorage.getItem('ud')) {
+      this.user = JSON.parse(localStorage.getItem('ud'))
+      this.getImageProfile() 
     } else {
-      this.router.navigate(['/login'])
+      window.location.href = '/login'
     }
 
   }

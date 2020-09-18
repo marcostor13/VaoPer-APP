@@ -1,9 +1,35 @@
-<ion-header>
+<!-- <ion-header>
   <ion-toolbar>
     <ion-title>config-provider</ion-title>
   </ion-toolbar>
-</ion-header>
+</ion-header> -->
 
 <ion-content>
+
+  <header class="container-fluid pt-3 pl-3 pr-3">
+    <div class="row m-0 justify-content-between align-items-center">
+      <div class="row align-items-center m-0">
+        <div class="user-image" [style]="'background-image: url('+userimage+')'"></div>
+        <h6 class="ml-3 font-700 f-13">{{user.user.name}}</h6>
+      </div>
+    </div>
+  </header>
+  <hr class="linea">
+  
+  <div class="d-flex flex-column m-0 p-3">
+  
+    <div class="cursor option p-3 col-12 bg-color7 col-xl-5">
+      <p [routerLink]="['config-user-provider']" class="m-0 p-0 font-700">Configuración</p>
+    </div>
+  
+    <div class="cursor option p-3 col-12 bg-color7 col-xl-5 mt-3">
+      <p (click)="logout()" class="m-0 p-0 font-700">Cerrar Sesión</p>
+    </div>
+  
+  </div>
+  
+  <div *ngIf="isLoad" class="load">
+    <img src="/assets/img/partials/load.svg">
+  </div>
 
 </ion-content>

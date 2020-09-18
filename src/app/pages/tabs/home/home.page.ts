@@ -20,13 +20,14 @@ export class HomePage implements OnInit {
 
   //USER
   user: any;
-  items: Array<any> = []
+  slides: Array<any> = []
   categories: any;
   isLoad: Boolean = true
   companies: any = []
   subcategories: any = []
   visibleIndices = new Set<number>();
   search: String = ''
+  currentPosition: any;
 
   slideOpts = {
     initialSlide: 1,
@@ -39,32 +40,54 @@ export class HomePage implements OnInit {
 
 
   constructor(private router: Router, private api: ApiService, private cookie: CookieService, private general: GeneralService) {
-    this.items = [
-      { src: '/assets/img/photos/photo1.jpg' },
-      { src: '/assets/img/photos/photo2.jpg' },
-      { src: '/assets/img/photos/photo3.jpg' },
-    ]  
+    this.getSlides()
   }
 
   ngOnInit(): void {
     this.validateSession()
     this.getCategoriesAndSubcategories()
     this.getCompaniesData()
+    this.getCurrentPosition()
   }
 
   validateSession() {
-    if (this.cookie.get('ud') && this.cookie.get('ud') != '') {
-      this.user = JSON.parse(this.cookie.get('ud'))
-      this.api.c('user role', this.user.user.role)
-
-      if (this.user.user.role == "proveedor") {
-        this.api.c('user role', this.user.user.role)
-        this.router.navigate(['/tabs-provider'])
-      }
-    }else{
-      this.router.navigate(['/login'])
+    if (localStorage.getItem('ud')) {
+      this.user = JSON.parse(localStorage.getItem('ud'))
     }
 
+  }
+
+  getSlides() {
+
+    let data = {
+      service: 'get-slides'
+    }
+    this.api.api(data).subscribe((result: any) => {
+      this.api.c('getSlides result', result)
+      result.data.forEach(e => {
+        if (e.type == 'mobile') {
+          this.slides.push({
+            src: e.image
+          })
+        }
+      });     
+      this.isLoad = false
+    },
+      error => {
+        this.api.c('Error getSlides', error)
+      });
+
+  }
+
+  getCurrentPosition() {
+    this.general.getPosition().then(pos => {
+
+      this.currentPosition = {
+        lat: pos.lat,
+        lng: pos.lng
+      }
+
+    })
   }
 
 
@@ -165,7 +188,7 @@ export class HomePage implements OnInit {
       if (result.length > 0) {
         this.subcategories = result
       } else {
-        this.router.navigate(['/results/' + categoryname]).then(() => {
+        this.router.navigate(['/tabs/home/results/' + categoryname]).then(() => {
           window.location.reload();
         })
       }
@@ -179,7 +202,7 @@ export class HomePage implements OnInit {
 
   redireccionarSubcategory(subcategorySelect) {
 
-    this.router.navigate(['/results/' + subcategorySelect]).then(() => {
+    this.router.navigate(['/tabs/home/results/' + subcategorySelect]).then(() => {
       window.location.reload();
     })
 
@@ -187,7 +210,7 @@ export class HomePage implements OnInit {
 
 
   redireccionar() {
-    this.router.navigate(['/results/' + this.search]).then(() => {
+    this.router.navigate(['/tabs/home/results/' + this.search]).then(() => {
       window.location.reload();
     })
     

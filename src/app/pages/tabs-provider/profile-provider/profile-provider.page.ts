@@ -31,10 +31,10 @@ export class ProfileProviderPage implements OnInit {
   }
 
   validateSession() {
-    this.user = JSON.parse(this.cookie.get('ud'))
-    this.api.c('user', this.user)
-    if (this.user.user.role !== 'proveedor' && this.user.user.role !== 'admin') {
-      this.router.navigate(['/'])
+    if (localStorage.getItem('ud')) {
+      this.user = JSON.parse(localStorage.getItem('ud'))
+    } else {
+      window.location.href = '/login'
     }
   }
 

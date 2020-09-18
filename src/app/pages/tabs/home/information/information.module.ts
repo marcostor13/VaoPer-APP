@@ -8,12 +8,17 @@ import { InformationPageRoutingModule } from './information-routing.module';
 
 import { InformationPage } from './information.page';
 
+import { AgmCoreModule } from '@agm/core';
+
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    InformationPageRoutingModule
+    InformationPageRoutingModule,
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyCB0ybbsuPrkmUgezCdsyNFpyZyyyGQDqM'
+    })
   ],
   declarations: [InformationPage]
 })

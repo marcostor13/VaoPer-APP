@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { EditProductsPageRoutingModule } from './edit-products-routing.module';
 
 import { EditProductsPage } from './edit-products.page';
+import { ImageCropperModule } from 'ngx-image-cropper';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    EditProductsPageRoutingModule
+    EditProductsPageRoutingModule,
+    ImageCropperModule,
   ],
   declarations: [EditProductsPage]
 })

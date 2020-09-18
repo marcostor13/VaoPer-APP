@@ -5,7 +5,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { GeneralService } from 'src/app/services/general.service';
 import { Observable, Subject } from 'rxjs';
 import { Plugins } from '@capacitor/core';
-
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 
 const { Geolocation, Network } = Plugins;
 
@@ -25,7 +25,8 @@ export class ResultsPage implements OnInit {
   //USER
   user: any;
   urlBackEnd: any = this.general.getUrlImages('profile');
-  companiesData: Array<any> = []
+  companiesData: Array<any> = [];
+  companiesData2: any;
   isLoad: Boolean = true
   service = new google.maps.DistanceMatrixService;
   search: any = ''
@@ -36,15 +37,17 @@ export class ResultsPage implements OnInit {
 
   currentPosition: any = {}
 
-  constructor(public route: ActivatedRoute, private router: Router, private api: ApiService, private cookie: CookieService, public general: GeneralService) {
-    this.id = this.route.snapshot.paramMap.get('id')    
+  constructor(public route: ActivatedRoute, private router: Router, private api: ApiService, private cookie: CookieService, public general: GeneralService, private socialSharing: SocialSharing) {
+    this.id = this.route.snapshot.paramMap.get('id')
   }
 
   ngOnInit(): void {
-    this.api.c('ID', this.id)
     this.validateSession()
-    this.getCompaniesData()
-    this.getFeaturedCompanies()
+    
+  }
+
+  ionViewWillEnter() {
+    this.getCompaniesData()    
     this.getCategoriesAndSubcategories()
   }
 
@@ -56,7 +59,7 @@ export class ResultsPage implements OnInit {
     this.api.api(data).subscribe(result => {
       this.api.c('getCategoriesAndSubcategories result', result)
       this.categories = result
-      this.isLoad = false
+      // this.isLoad = false
     },
       error => {
         this.api.c('Error getCategoriesAndSubcategories', error)
@@ -69,7 +72,7 @@ export class ResultsPage implements OnInit {
   }
 
   searchEvent() {
-    this.router.navigate(['/tabs/home/results/' + this.search]).then(() => {
+    this.router.navigate(['/results/' + this.search]).then(() => {
       window.location.reload();
     });
 
@@ -78,28 +81,26 @@ export class ResultsPage implements OnInit {
 
 
   validateSession() {
-    if (this.cookie.get('ud') && this.cookie.get('ud') != '') {
-      this.user = JSON.parse(this.cookie.get('ud'))
-      this.api.c('user', this.user)
-      if (this.user.user.role === "proveedor") {
-        this.router.navigate(['/dashboard'])
-      }
-    }else{
-      this.router.navigate(['/login'])
+    if (localStorage.getItem('ud')) {
+      this.user = JSON.parse(localStorage.getItem('ud'))   
+      this.getFeaturedCompanies()
     }
   }
 
   getCompaniesData() {
 
+    this.companiesData = []
+
     let data = {
       search: this.id,
-      service: 'get-companies-data'
+      service: 'get-companies-data',
+      userid: this.user ? this.user.user.id : null
     }
     this.api.api(data).subscribe((result: any) => {
       this.api.c('getCompaniesData', result)
       if (result.status) {
-        if (result.data.length > 0) {          
-          this.getCurrentPosition(this.deleteDuplicados(result.data))         
+        if (result.data.length > 0) {
+          this.getCurrentPosition(this.deleteDuplicados(result.data))          
         } else {
           this.response = 'No hay resultados'
           this.isLoad = false
@@ -122,23 +123,48 @@ export class ResultsPage implements OnInit {
 
   getCurrentPosition(companiesData) {
     this.general.getPosition().then(pos => {
-      this.api.c('Position', `${pos.lng} ${pos.lat}`)
+
       this.currentPosition = {
         lat: pos.lat,
         lng: pos.lng
       }
+
+    }).then(() => {
       this.getDistances(companiesData)
-    });
+      this.isLoad = false
+    })
+  }
+
+  orderCompanies(companiesData){
+    setTimeout(() => {
+      
+        this.api.c('this.companiesData.length', this.companiesData.length)
+        this.companiesData = this.companiesData.sort(function (a, b) {
+          if (a['distanceValue'] > b['distanceValue']) {
+            return 1;
+          }
+          if (a['distanceValue'] < b['distanceValue']) {
+            return -1;
+          }
+          return 0;
+        })
+        this.isLoad = false       
+    
+    }, 1000)
   }
 
   getDistances(companiesData) {
 
     for (let i = 0; i < companiesData.length; i++) {
       const element = companiesData[i]
-      this.api.c('getDistances', element)
       if (element.address1) {
         var place = element.address1
-        this.getPositionByString(place, i, companiesData.length, companiesData)
+        this.getDistance(place, i, companiesData)
+      }
+
+      if (companiesData.length == i+1){
+        this.api.c('Terminado', 'ok')
+        this.orderCompanies(companiesData)
       }
     }
 
@@ -146,68 +172,33 @@ export class ResultsPage implements OnInit {
 
 
 
-  getPositionByString(place, i, arrayLength, companiesData) {
+  getDistance(destinationPosition, i, companiesData) {
 
-    var map = new google.maps.Map(document.getElementById('map'), {
-      center: { lat: -77.0008672, lng: -12.1425035 },
-      zoom: 15
-    });
-    var request = {
-      query: place,
-      fields: ['name', 'geometry'],
-    };
-    var service = new google.maps.places.PlacesService(map);
-    return new Promise(() => {
-      service.findPlaceFromQuery(request, results => {
+    this.service.getDistanceMatrix({
+      origins: [this.currentPosition],
+      destinations: [destinationPosition],
+      travelMode: google.maps.TravelMode['DRIVING'],
+      unitSystem: google.maps.UnitSystem.METRIC,
+      avoidHighways: false,
+      avoidTolls: false
+    }, response => {
 
-        var destinationPosition = {
-          lat: results ? results[0].geometry.location.lat() : '',
-          lng: results ? results[0].geometry.location.lng() : ''
-        }
-        if (results) {
-          this.getDistance(destinationPosition, i, arrayLength, companiesData)
+      companiesData[i]['distance'] = response.rows[0].elements[0].distance ? response.rows[0].elements[0].distance.text : ''
+      companiesData[i]['distanceValue'] = response.rows[0].elements[0].distance ? response.rows[0].elements[0].distance.value : 1000000
+
+      if (response.destinationAddresses) {
+        let dest = response.destinationAddresses[0].split(',')
+
+        if (dest.length > 1) {
+          companiesData[i]['district'] = dest[dest.length - 2].replace(/[0-9]+/g, '').trim()
         } else {
-          this.companiesData = companiesData
+          companiesData[i]['district'] = dest[dest.length - 1].replace(/[0-9]+/g, '').trim()
         }
-      })
-    });
 
+      }
+      this.companiesData.push(companiesData[i])
+    })
   }
-
-
-  getDistance(destinationPosition, i, arrayLength, companiesData) {
-
-    return new Promise(() => {
-      this.service.getDistanceMatrix({
-        origins: [this.currentPosition],
-        destinations: [destinationPosition],
-        travelMode: google.maps.TravelMode['DRIVING'],
-        unitSystem: google.maps.UnitSystem.METRIC,
-        avoidHighways: false,
-        avoidTolls: false
-      }, response => {
-        companiesData[i]['distance'] = response.rows[0].elements[0].distance.text
-        companiesData[i]['distanceValue'] = response.rows[0].elements[0].distance.value
-        this.api.c('getDistance res', response.rows[0].elements[0].distance.text)
-        this.api.c('getDistance arrayLength', arrayLength)
-        this.api.c('getDistance i', i)
-        if (i + 1 == arrayLength) {
-          this.companiesData = companiesData.sort(function (a, b) {
-            if (a['distanceValue'] > b['distanceValue']) {
-              return 1;
-            }
-            if (a['distanceValue'] < b['distanceValue']) {
-              return -1;
-            }
-            return 0;
-          });
-          this.isLoad = false
-        }
-      })
-    });
-
-  }
-
 
   addFeaturedCompanies(companyid, e: any) {
     this.isLoad = true
@@ -290,22 +281,13 @@ export class ResultsPage implements OnInit {
 
   }
 
-  share(companyid) {
-    this.general.saveEvent('share', companyid)
-    let newVariable = (window.navigator as any)
-    if (newVariable.share) {
-      newVariable.share({
-        title: document.title,
-        text: "Vaoperu.pe",
-        url: window.location.href,
-      })
-        .then(() => console.log('Successful share'))
-        .catch((error) => console.log('Error sharing', error));
-    } else {
-      this.api.c('Share', 'No soportado')
-    }
+  share(companyid, name) {    
 
-
+    const url = 'https://vaoperu.com/web/' + companyid
+    const text = name
+    this.socialSharing.share(text, document.title, null, url).then(_=>{
+      this.general.saveEvent('share', companyid)
+    })
 
   }
 
@@ -321,29 +303,23 @@ export class ResultsPage implements OnInit {
     for (let index = 0; index < array.length; index++) {
       const e = array[index];
       if (this.general.searchIndexByNameKey(res, 'id', e.id) === false) {
+
+        e['distanceValue'] = 0;
+        e['distance'] = '';
+
         res.push(e)
       }
     }
+
     return res
 
   }
 
-  message(receptorid, companyDataID) {
-
-    if (!this.user) {
-      this.router.navigate(['/login'])
-    } else {
-      if (this.user.user.id != receptorid) {
-
-        if (this.createChat(this.user.user.id, receptorid)) {
-          this.router.navigate(['/tabs/chat/' + receptorid])
-        }
-
-      }
+  message(receptorid, companyDataID, phone1) {
+    if(phone1){
+      window.location.href = `https://api.whatsapp.com/send?phone=51${phone1}&text=Hola, necesito más información`
     }
-
     this.general.saveEvent('message', companyDataID)
-
   }
 
 

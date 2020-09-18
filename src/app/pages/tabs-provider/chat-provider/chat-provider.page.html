@@ -1,9 +1,154 @@
-<ion-header>
+<!-- <ion-header>
   <ion-toolbar>
     <ion-title>chat-provider</ion-title>
   </ion-toolbar>
-</ion-header>
+</ion-header> -->
 
 <ion-content>
+
+  <div class="row m-0 justify-content-center align-items-start vw-100">    
+    
+      <div class="d-none d-xl-flex chats bg-color2 pl-3 pr-3 overflow-auto pb-3 align-items-start flex-column mt-2">
+          
+          <!-- CHAT LIST ITEM -->
+          <div [ngClass]="{'bg-color7': chat.receptor == currentReceptor}" *ngFor="let chat of chats | async" (click)="getMessages(chat.receptor)" class="w-100 itemChatList cursor  rounded p-2 pl-3 pr-3 mt-3 row m-0 justify-content-center align-items-center">
+              <div class="col-2 row m-0 justify-content-center align-items-center">
+                  <img width="40" [src]="dataUsers[chat.receptor] && dataUsers[chat.receptor].imageprofile ? dataUsers[chat.receptor].imageprofile:'/assets/img/partials/user.svg'" alt="">
+              </div>
+              <div class="chatlistitem flex-1 pl-3">
+                  <h6 *ngIf="dataUsers[chat.receptor]" class="f-11 font-700">{{dataUsers[chat.receptor].name || ''}}</h6>
+                  <span *ngIf="getNotification(chat.id) != 0">{{getNotification(chat.id) }}</span>
+                  <!-- <p class="f-10 p-0 m-0">{{chat.receptorName}}</p> -->
+                  <p class="f-10 p-0 m-0">{{formatDate(chat.date)}}</p>
+              </div>
+          </div>
+
+      </div>
+
+      <div *ngIf="listChatActive" class="d-flex d-xl-none chats bg-color2 pl-3 pr-3 overflow-auto pb-3 col-12 align-items-center flex-column justify-content-start">
+      
+          <!-- CHAT LIST ITEM -->
+          <div [ngClass]="{'bg-color7': chat.receptor == currentReceptor}" *ngFor="let chat of chats | async" (click)="getMessages(chat.receptor)" class="w-100 itemChatList cursor  rounded p-2 pl-3 pr-3 mt-3 row m-0 justify-content-center align-items-center">
+              <div class="col-2 row m-0 justify-content-center align-items-center">
+                  <img width="40" [src]="dataUsers[chat.receptor] && dataUsers[chat.receptor].imageprofile ? dataUsers[chat.receptor].imageprofile:'/assets/img/partials/user.svg'" alt="">
+              </div>
+              <div class="chatlistitem flex-1 pl-3">
+                  <h6 *ngIf="dataUsers[chat.receptor]" class="f-11 font-700">{{dataUsers[chat.receptor].name || ''}}</h6>
+                  <span *ngIf="getNotification(chat.id) != 0">{{getNotification(chat.id) }}</span>
+                  <!-- <p class="f-10 p-0 m-0">{{chat.receptorName}}</p> -->
+                  <p class="f-10 p-0 m-0">{{formatDate(chat.date)}}</p>
+              </div>
+          </div>
+      
+      </div>
+
+      
+      <div class="d-none d-xl-flex messages flex-1 overflow-hidden flex-column align-items-center justify-content-between">        
+
+          <div #scrollMe class="display-chat overflow-auto w-100 align-items-center">
+
+              <!-- MESSAGE ITEM RIGHT -->
+              <div [ngClass]="{'justify-content-end': user.user.id == m.id, 'justify-content-start': user.user.id != m.id}" class="row m-0 col-12 mt-3 mb-3"  *ngFor="let m of messages | async">
+                  <div [ngClass]="{'bg-color1': user.user.id == m.id, 'bg-color7': user.user.id != m.id}" class="parraf p-2 pr-3 pl-3 rounded shadow">
+                      <div class="row justify-content-end m-0">
+                          <p class="f-11">{{m.message}}</p>
+                      </div>
+                      <div class="row justify-content-end m-0">
+                          <span class="f-10">{{formatDate(m.date)}}</span>
+                      </div>
+                  </div>
+              </div>
+
+              <!-- MESSAGE ITEM LEFT -->
+              <!-- <div  class="row m-0 justify-content-start col-12 mt-3">
+                  <div class="parraf bg-color7 p-2 pr-3 pl-3 rounded shadow">
+                      <div class="row justify-content-end m-0">
+                          <p class="f-11">2Lorem ipsum dolor sit, amet consectetur adipisicing elit. Delectus repudiandae a, dolor dolorem, voluptatum rem ad laudantium blanditiis, sit earum ea officia!</p>
+                      </div>
+                      <div class="row justify-content-end m-0">
+                          <span class="f-10">20/10/2020 11:45pm</span>
+                      </div>
+                  </div>
+              </div> -->
+
+          </div>       
+
+          <!-- MESSAGE INPUT -->
+          <div class="input-chat col-12 row m-0 justify-content-center">
+              <div class="col-10 mt-3">
+                  <input class="pl-4 col-12 rounded-pill shadow-lg" type="text" [(ngModel)]="textMessage">
+              </div>
+              <div class="flex-1 mt-3">
+                  <button (keyup.enter)="sendMessage()" (click)="sendMessage()" class="btn1 rounded-pill">Enviar</button>
+              </div>
+          </div>
+      </div>
+
+
+      <!-- RESPONSIVE -->
+
+      <div *ngIf="!listChatActive" class="d-flex d-xl-none messages flex-1 overflow-hidden d-flex flex-column align-items-center justify-content-between">
+
+          <div  class="col-12 bg-color2 row m-0 justify-content-center p-4">
+              <button (click)="listChatActive = true" class="btn2 pt-2 pb-2 pl-5 pr-5 f-17 font-900">VOLVER A CHATS</button>           
+          </div>
+
+          <div #scrollMe2 class="display-chat2 overflow-auto w-100 align-items-center">
+      
+              <!-- MESSAGE ITEM RIGHT -->
+              <div [ngClass]="{'justify-content-end': user.user.id == m.id, 'justify-content-start': user.user.id != m.id}"
+                  class="row m-0 col-12 mt-4 mb-3" *ngFor="let m of messages | async">
+                  <div [ngClass]="{'bg-color1': user.user.id == m.id, 'bg-color7': user.user.id != m.id}"
+                      class="parraf p-2 pr-3 pl-3 rounded shadow">
+                      <div class="row justify-content-end m-0">
+                          <p class="f-11">{{m.message}}</p>
+                      </div>
+                      <div class="row justify-content-end m-0">
+                          <span class="f-10">{{formatDate(m.date)}}</span>
+                      </div>
+                  </div>
+              </div>
+      
+              <!-- MESSAGE ITEM LEFT -->
+              <!-- <div  class="row m-0 justify-content-start col-12 mt-3">
+                      <div class="parraf bg-color7 p-2 pr-3 pl-3 rounded shadow">
+                          <div class="row justify-content-end m-0">
+                              <p class="f-11">2Lorem ipsum dolor sit, amet consectetur adipisicing elit. Delectus repudiandae a, dolor dolorem, voluptatum rem ad laudantium blanditiis, sit earum ea officia!</p>
+                          </div>
+                          <div class="row justify-content-end m-0">
+                              <span class="f-10">20/10/2020 11:45pm</span>
+                          </div>
+                      </div>
+                  </div> -->
+      
+          </div>
+      
+          <!-- MESSAGE INPUT -->
+          <div class="input-chat2 col-12 row m-0 justify-content-center">
+              <div class="flex-1 mt-3 p-0">
+                  <input class="pl-4 col-12 rounded-pill shadow-lg" type="text" [(ngModel)]="textMessage">
+              </div>
+              <div class=" mt-3 p-0">
+                  <button (keyup.enter)="sendMessage()" (click)="sendMessage()" class="btnSend bg-color2 pl-2 pr-2 rounded-pill row m-0 justify-content-center align-items-center border-0 ml-2"><svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30" height="30" viewBox="0 0 172 172"
+                      style=" fill:#000000;">
+                      <g fill="none" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter"
+                          stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none"
+                          font-size="none" text-anchor="none" style="mix-blend-mode: normal">
+                          <path d="M0,172v-172h172v172z" fill="none"></path>
+                          <g fill="#ffffff">
+                              <path
+                                  d="M149.06667,17.2c-0.55025,0.00377 -1.09709,0.08674 -1.6237,0.24635c-0.15501,0.04207 -0.30818,0.09064 -0.45911,0.14557l-126.05495,40.08854v0.02239c-2.23962,0.83573 -3.72568,2.97333 -3.72891,5.3638c0.00425,2.00222 1.05271,3.85719 2.76589,4.89349l38.30807,30.39114l75.73151,-60.35677l-60.35677,75.73151l30.36875,38.28567c1.0349,1.7286 2.90117,2.78714 4.91589,2.78828c2.39047,-0.00322 4.52807,-1.48928 5.3638,-3.72891h0.02239l40.12214,-126.16692c0.041,-0.11449 0.07834,-0.23027 0.11198,-0.34714c0.15961,-0.52661 0.24258,-1.07345 0.24636,-1.6237c0,-3.16643 -2.5669,-5.73333 -5.73333,-5.73333z">
+                              </path>
+                          </g>
+                      </g>
+                  </svg></button>
+              </div>
+          </div>
+      </div>
+
+  </div>
+
+
+
 
 </ion-content>

@@ -110,5 +110,11 @@ button:disabled{
 }
 
 #map{
-    min-height: 280px;
+    // min-height: 280px;
+    // min-width: 300px;
+}
+
+agm-map {
+    margin-top: 40px !important;
+  height: 300px;
 }

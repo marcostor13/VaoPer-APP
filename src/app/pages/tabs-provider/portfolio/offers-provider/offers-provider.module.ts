@@ -7,13 +7,17 @@ import { IonicModule } from '@ionic/angular';
 import { OffersProviderPageRoutingModule } from './offers-provider-routing.module';
 
 import { OffersProviderPage } from './offers-provider.page';
+import { ImageCropperModule } from 'ngx-image-cropper';
+import { NzModalModule } from 'ng-zorro-antd/modal';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    OffersProviderPageRoutingModule
+    OffersProviderPageRoutingModule,
+    ImageCropperModule,
+    NzModalModule,
   ],
   declarations: [OffersProviderPage]
 })

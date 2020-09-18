@@ -82,8 +82,13 @@
     </div>
 
     <div class="form-group mt-2 ">
-        <label>Direccion</label>
+        <label>Direccion GPS</label>
         <input type="text" class="form-control" placeholder="Ingrese direccion" [(ngModel)]="address">
+    </div>
+
+    <div class="form-group mt-2 ">
+        <label>Direccion display (Se visualizará para los usuarios)</label>
+        <input type="text" class="form-control" placeholder="Ingrese direccion" [(ngModel)]="addressDisplay">
     </div>
 
     <div class="form-group mt-2">
@@ -136,9 +141,36 @@
         </select>
     </div>
 
+    <div class="form-group mt-2 ">
+        <label>Hora de apertura</label>
+        <input (change)="onChangeDelivery()" type="time" class="form-control" placeholder="Ingrese hora" [(ngModel)]="starthour">
+    </div>
+    
+    <div class="form-group mt-2 ">
+        <label>Hora de cierre</label>
+        <input (change)="onChangeDelivery()" type="time" class="form-control" placeholder="Ingrese hora" [(ngModel)]="endhour">
+    </div>
+
+    <div class="p-3 mb-5 pb-5">
+        <div class="sections row m-0 align-items-center">
+            <label class="switch">
+                <input (change)="onChangeDelivery()" type="checkbox" [(ngModel)]="delivery">
+                <span class="slider round"></span>
+            </label>
+            <p class="ml-4 font-700 p-0 mb-2 f-16">Delivery</p>
+        </div>
+        <div class="sections row m-0 align-items-center mt-2">
+            <label class="switch">
+                <input (change)="onChangeDelivery()" type="checkbox" [(ngModel)]="tienda">
+                <span class="slider round"></span>
+            </label>
+            <p class="ml-4 font-700 p-0 mb-2 f-16">Recojo en tienda</p>
+        </div>      
+    </div>
+
     
     <div class="row justify-content-end m-0 col-12">
-        <button (click)="saveProfile()" class="btn1 font-700 pt-2 pb-2">Guardar</button>
+        <button (click)="handleUpload()" class="btn1 font-700 pt-2 pb-2">Guardar</button>
     </div>
 
     <div class="form-group mt-2">
@@ -174,6 +206,10 @@
             <button (click)="addCategories()" class="btn1 pl-3 pr-3 pt-1 pb-1 mr-3">Agregar</button>
         </div>
 
+        <div class="form-group mt-2">
+            <p class="text-color4">{{responseModal}}</p>
+        </div>
+
     </div>
   
 </div>
@@ -198,7 +234,7 @@
                     [imageChangedEvent]="imageChangedEvent" 
                     [maintainAspectRatio]="true" 
                     [aspectRatio]="1 / 1"
-                    [resizeToWidth]="256" 
+                    [resizeToWidth]="0" 
                     format="png" 
                     (imageCropped)="imageCropped($event)" 
                     (imageLoaded)="imageLoaded()"

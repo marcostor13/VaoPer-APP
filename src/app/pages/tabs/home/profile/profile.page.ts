@@ -4,6 +4,7 @@ import { ApiService } from 'src/app/services/api.service';
 import { CookieService } from 'ngx-cookie-service';
 import { GeneralService } from 'src/app/services/general.service';
 import { Subject, Observable } from 'rxjs';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 
 declare var google;
 
@@ -43,7 +44,7 @@ export class ProfilePage implements OnInit {
   isVisible: Boolean = false
   currentDescription: String = ''
 
-  constructor(public route: ActivatedRoute, private router: Router, private api: ApiService, private cookie: CookieService, public general: GeneralService) {
+  constructor(public route: ActivatedRoute, private router: Router, private api: ApiService, private cookie: CookieService, public general: GeneralService, private socialSharing: SocialSharing) {
     this.id = this.route.snapshot.paramMap.get('id')    
   }
 
@@ -56,16 +57,19 @@ export class ProfilePage implements OnInit {
     this.getProducts('products');
     this.getProducts('offers');
     this.general.saveEvent('visit', this.id)
+
+    
+
   }
 
   validateSession() {
-    if (this.cookie.get('ud') && this.cookie.get('ud') != '') {
-      this.user = JSON.parse(this.cookie.get('ud'))
-      this.api.c('user', this.user)
-      if (this.user.user.role === "proveedor") {
-        this.router.navigate(['/provider'])
-      }
+    if (localStorage.getItem('ud')) {
+      this.user = JSON.parse(localStorage.getItem('ud'))  
     }
+  }
+
+  ionViewWillEnter(){
+    this.getCompanyData()
   }
 
   getCategoriesAndSubcategories() {
@@ -87,12 +91,14 @@ export class ProfilePage implements OnInit {
   }
 
   getCompanyData() {
+    this.companyData = {}
 
     this.isLoad = true
 
     let data = {
       companyid: this.id,
-      service: 'get-company-data2'
+      service: 'get-company-data2',
+      userid: this.user ? this.user.user.id : null
     }
     this.api.api(data).subscribe((result: any) => {
       this.api.c('getCompanyData', result)
@@ -121,20 +127,13 @@ export class ProfilePage implements OnInit {
     window.history.back()
   }
 
-  share(companyid) {
-    this.general.saveEvent('share', companyid)
-    let newVariable = (window.navigator as any)
-    if (newVariable.share) {
-      newVariable.share({
-        title: document.title,
-        text: "Vaoperu.pe",
-        url: window.location.href,
-      })
-        .then(() => console.log('Successful share'))
-        .catch((error) => console.log('Error sharing', error));
-    } else {
-      this.api.c('Share', 'No soportado')
-    }
+  share(companyid, name) {    
+
+    const url = 'https://vaoperu.com/web/' + companyid
+    const text = name
+    this.socialSharing.share(text, document.title, null, url).then(_=>{
+      this.general.saveEvent('share', companyid)
+    })
 
   }
 
@@ -266,10 +265,7 @@ export class ProfilePage implements OnInit {
   }
 
 
-  getFirstImage(array) {
-
-    console.log('Images ',array)
-
+  getFirstImage(array) { 
     return array[0].image;
   }
 
@@ -297,19 +293,23 @@ export class ProfilePage implements OnInit {
   }
 
 
-  message(receptorid, companyDataID) {
+  message(receptorid, companyDataID, phone1) {
 
-    if (!this.user) {
-      this.router.navigate(['/login'])
-    } else {
-      if (this.user.user.id != receptorid) {
-
-        if (this.createChat(this.user.user.id, receptorid)) {
-          this.router.navigate(['/chat-provider/' + receptorid])
-        }
-
-      }
+    if (phone1) {
+      window.location.href = `https://api.whatsapp.com/send?phone=51${phone1}&text=Hola, necesito más información`
     }
+
+
+    // if (!this.user) {
+    //   this.router.navigate(['/login'])
+    // } else {
+    //   if (this.user.user.id != receptorid) {
+    //     if (this.createChat(this.user.user.id, receptorid)) {
+    //       this.router.navigate(['/tabs/chat/' + receptorid])
+    //     }
+
+    //   }
+    // }
 
     this.general.saveEvent('message', companyDataID)
 

@@ -12,7 +12,12 @@ export class ApiService {
 
   url: string = 'https://api.vaoperu.com/api/';
 
-  constructor(private http: HttpClient, private cookie: CookieService, private router: Router, private firestore: AngularFirestore) { //
+  constructor(
+    private http: HttpClient, 
+    private cookie: CookieService, 
+    private router: Router, 
+    private firestore: AngularFirestore
+    ) { //
     // if (window.location.href.indexOf('104.155.156.43') > -1 || window.location.href.indexOf('vaoperu') > -1) {
     //   this.url = 'https://api.vaoperu.com/api/';
     // } else {
@@ -45,8 +50,8 @@ export class ApiService {
             this.addDocument({
               collection: collectionChat,
               data: {
-                id: data.useridOri,
-                message: 'Hola necesito información',
+                id: data.useridDes,
+                message: 'Hola, ¿en qué podemos ayudarte?',
                 date: new Date()
               }
             })
@@ -73,6 +78,19 @@ export class ApiService {
                 date: new Date()
               }
             })
+
+            //ADD ID TO LISTS NOTIFICATION DES
+            const collectionNotificationDes = 'chatnotification_' + data.useridDes
+            this.addDocument({
+              collection: collectionNotificationDes,
+              document: collectionChat,
+              data: {
+                id: collectionChat,
+                emisor: data.useridOri,
+                date: new Date()
+              }
+            })
+
           }
         })
       }
@@ -97,6 +115,18 @@ export class ApiService {
                 date: new Date
               }
             })
+
+            //ADD NOTIFICATION
+            this.addDocument({
+              collection: 'chatnotification_' + data.useridDes,
+              data: {
+                id: collectionChat,
+                emisor: data.useridOri,
+                date: new Date()
+              }
+            })
+
+
           }
         })
       } else {
@@ -107,6 +137,16 @@ export class ApiService {
             message: data.message,
             id: data.useridOri,
             date: new Date
+          }
+        })
+
+        //ADD NOTIFICATION
+        this.addDocument({
+          collection: 'chatnotification_' + data.useridDes,
+          data: {
+            id: collectionChat,
+            emisor: data.useridOri,
+            date: new Date()
           }
         })
       }

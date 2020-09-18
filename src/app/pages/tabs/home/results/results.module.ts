@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { ResultsPageRoutingModule } from './results-routing.module';
 
 import { ResultsPage } from './results.page';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 
 @NgModule({
   imports: [
@@ -15,6 +16,9 @@ import { ResultsPage } from './results.page';
     IonicModule,
     ResultsPageRoutingModule
   ],
-  declarations: [ResultsPage]
+  declarations: [ResultsPage],
+  providers: [  
+    SocialSharing 
+  ]
 })
 export class ResultsPageModule {}

@@ -64,3 +64,23 @@
 }
 
 
+.chatlistitem{
+    position: relative;
+    span{
+        position: absolute;
+        min-width: 18px;
+        max-width: 18px;
+        min-height: 18px;
+        max-height: 18px;
+        background-color: red;
+        color: white;
+        z-index: 2;
+        top: 0;
+        right: 0;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+}

@@ -7,6 +7,10 @@ const routes: Routes = [
   {
     path: '',
     component: ConfigProviderPage
+  },
+  {
+    path: 'config-user-provider',
+    loadChildren: () => import('./config-user-provider/config-user-provider.module').then( m => m.ConfigUserProviderPageModule)
   }
 ];
 

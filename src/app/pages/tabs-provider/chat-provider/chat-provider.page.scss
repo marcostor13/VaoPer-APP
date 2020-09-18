@@ -1,0 +1,85 @@
+@import '../../../../styles/variables';
+
+.chats{
+    height: 93.5vh;
+}
+
+.itemChatList{
+    background-color: white;
+}
+
+.bg-color7{
+    background-color: rgb(209, 209, 209) !important;
+}
+
+.messages{
+
+    position: relative;
+
+    .display-chat{        
+        min-height: 80vh;
+        max-height: 80vh;
+        .parraf{
+            max-width: 90%;
+        }
+    }
+
+    .display-chat2{        
+        min-height: 84vh;
+        max-height: 84vh;
+        padding-bottom: 120px;
+        .parraf{
+            max-width: 90%;
+        }
+    }
+
+    .input-chat{
+        min-height: 15vh;
+        input{
+            border: solid 2px $color1;
+            min-height: 50px;
+        }
+        .btn1{
+            min-height: 50px;
+        }
+    }
+
+    .input-chat2{
+        position: absolute;
+        bottom: 4em;        
+        input{
+            border: solid 2px $color1;
+            min-height: 50px;
+        }
+        .btnSend{
+            min-height: 50px;
+            min-width: 50px;
+            max-width: 50px;
+        }
+    }
+}
+
+.listItem{
+    background-color: 'gray' !important;
+}
+
+.chatlistitem{
+    position: relative;
+    span{
+        position: absolute;
+        min-width: 18px;
+        max-width: 18px;
+        min-height: 18px;
+        max-height: 18px;
+        background-color: red;
+        color: white;
+        z-index: 2;
+        top: 0;
+        right: 0;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+}

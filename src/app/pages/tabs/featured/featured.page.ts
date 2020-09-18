@@ -5,6 +5,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { GeneralService } from 'src/app/services/general.service';
 import { Subject } from 'rxjs';
 import { Plugins } from '@capacitor/core';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 // import { } from '@types/googlemaps';
 
 
@@ -35,7 +36,7 @@ export class FeaturedPage implements OnInit {
 
   currentPosition: any = {}
 
-  constructor(public route: ActivatedRoute, private router: Router, private api: ApiService, private cookie: CookieService, private general: GeneralService) {
+  constructor(public route: ActivatedRoute, private router: Router, private api: ApiService, private cookie: CookieService, private general: GeneralService, private socialSharing: SocialSharing,) {
    
   }
 
@@ -51,9 +52,12 @@ export class FeaturedPage implements OnInit {
   }
 
   ngOnInit(): void {
-    this.validateSession()
-    this.getCompaniesDataFeatured()
+    this.validateSession()   
     this.getCategoriesAndSubcategories()
+  }
+
+  ionViewWillEnter(){
+    this.getCompaniesDataFeatured()
   }
 
   getCategoriesAndSubcategories() {
@@ -73,14 +77,10 @@ export class FeaturedPage implements OnInit {
   }
 
   validateSession() {
-    if (this.cookie.get('ud') && this.cookie.get('ud') != '') {
-      this.user = JSON.parse(this.cookie.get('ud'))
-      this.api.c('user', this.user)
-      if (this.user.user.role === "proveedor") {
-        this.router.navigate(['/provider'])
-      }
+    if (localStorage.getItem('ud')) {
+      this.user = JSON.parse(localStorage.getItem('ud'))     
     } else {
-      this.router.navigate(['/login'])
+      window.location.href='/login'    
     }
   }
 
@@ -98,7 +98,10 @@ export class FeaturedPage implements OnInit {
         if (result.status) {
 
           if (result.data.length > 0) {
-            this.getCurrentPosition(result.data)
+            this.response = ''
+            this.isLoad = false
+            this.companiesData = result.data
+            // this.getCurrentPosition(result.data)
           } else {
             this.response = 'No tiene negocios favoritos'
             this.isLoad = false
@@ -109,6 +112,10 @@ export class FeaturedPage implements OnInit {
         }
       },
         error => {
+          if(error.status == 401){
+            alert('Su sesión ha vencido');
+            this.router.navigate(['/login'])          
+          }
           this.api.c('Error getCompaniesDataFeatured', error)
 
         });
@@ -158,14 +165,17 @@ export class FeaturedPage implements OnInit {
     };
     var service = new google.maps.places.PlacesService(map);
     return new Promise(() => {
-      service.findPlaceFromQuery(request, results => {
-        this.api.c('getPositionByString Lat', results[0].geometry.location.lat())
-        this.api.c('getPositionByString Lng', results[0].geometry.location.lng())
-        var destinationPosition = {
-          lat: results[0].geometry.location.lat(),
-          lng: results[0].geometry.location.lng()
+      service.findPlaceFromQuery(request, results => {        
+
+        if(results){
+          var destinationPosition = {
+            lat: results[0].geometry.location.lat(),
+            lng: results[0].geometry.location.lng()
+          }
+          this.getDistance(destinationPosition, i, arrayLength, results)
+        }else{
+          this.companiesData = companiesData
         }
-        this.getDistance(destinationPosition, i, arrayLength, companiesData)
       })
     });
 
@@ -224,6 +234,7 @@ export class FeaturedPage implements OnInit {
       }
     },
       error => {
+        
         this.api.c('Error addFeaturedCompanies', error)
 
       });
@@ -249,29 +260,22 @@ export class FeaturedPage implements OnInit {
       }
     },
       error => {
+        
         this.api.c('Error deleteFeaturedCompanies', error)
+        
 
       });
 
   }
 
 
-  share() {
+  share(companyid, name) {    
 
-    let newVariable = (window.navigator as any)
-    if (newVariable.share) {
-      newVariable.share({
-        title: document.title,
-        text: "Vaoperu.pe",
-        url: window.location.href,
-      })
-        .then(() => console.log('Successful share'))
-        .catch((error) => console.log('Error sharing', error));
-    } else {
-      this.api.c('Share', 'No soportado')
-    }
-
-
+    const url = 'https://vaoperu.com/web/' + companyid
+    const text = name
+    this.socialSharing.share(text, document.title, null, url).then(_=>{
+      this.general.saveEvent('share', companyid)
+    })
 
   }
 
@@ -280,19 +284,22 @@ export class FeaturedPage implements OnInit {
     this.eventsSubject.next();
   }
 
-  message(receptorid, companyDataID) {
+  message(receptorid, companyDataID, phone1) {
 
-    if (!this.user) {
-      this.router.navigate(['/login'])
-    } else {
-      if (this.user.user.id != receptorid) {
-
-        if (this.createChat(this.user.user.id, receptorid)) {
-          this.router.navigate(['/chat-provider/' + receptorid])
-        }
-
-      }
+    if (phone1) {
+      window.location.href = `https://api.whatsapp.com/send?phone=51${phone1}&text=Hola, necesito más información`
     }
+
+    // if (!this.user) {
+    //   this.router.navigate(['/login'])
+    // } else {
+    //   if (this.user.user.id != receptorid) {
+    //     if (this.createChat(this.user.user.id, receptorid)) {
+    //       this.router.navigate(['/tabs/chat/' + receptorid])
+    //     }
+
+    //   }
+    // }
 
     this.general.saveEvent('message', companyDataID)
 
