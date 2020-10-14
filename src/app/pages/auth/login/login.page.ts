@@ -25,6 +25,14 @@ export class LoginPage implements OnInit {
   picture;
   name;
 
+  isVisible = false;
+  isConfirmLoading = false;
+
+
+  step2: boolean = false
+  emailremenber: String = ''
+  responseModal: String = ''
+
   constructor(
     private router: Router, 
     private api: ApiService, 
@@ -100,6 +108,50 @@ export class LoginPage implements OnInit {
       this.isPassword = true
     }
   }
+
+  showModal(): void {
+    this.isVisible = true;
+  }
+
+  handleOk(): void {
+    this.isConfirmLoading = true;
+    this.sendMail()
+
+  }
+
+  handleCancel(): void {
+    this.isVisible = false;
+  }
+
+  sendMail() {
+
+    let data = {
+      email: this.emailremenber,
+      linkredirect: 'http://vaoperu.com/auth/resetpassword/',
+      service: 'resetpassword'
+    }
+    this.api.api(data).subscribe((result: any) => {
+      this.api.c('Result mail', result)
+      if (result.status) {
+        this.step2 = true
+        this.responseModal = 'Se envío un mensaje a su correo, para la recuperación de su contraseña'
+      } else {
+        this.isConfirmLoading = false;
+        this.step2 = true
+        if (result.statuscode == 301) {
+          this.responseModal = 'El email no existe'
+        } else {
+          this.api.c('Result mail false', result)
+        }
+      }
+    },
+      error => {
+        this.api.c('Result mailError', error)
+
+      });
+
+  }
+
 
 
 }

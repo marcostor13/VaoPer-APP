@@ -11,6 +11,15 @@
 <ion-content>
   <div class="p-3 row m-0" >
 
+        <div class="col-12 p-0 mb-4 row m-0 align-items-center">
+          <nz-select class="select100 mr-2" [nzMaxTagCount]="3" [nzMaxTagPlaceholder]="tagPlaceHolder" nzMode="multiple"
+            nzPlaceHolder="Filtrar por distritos" [(ngModel)]="districts" >
+            <nz-option *ngFor="let item of listOptionsDistrict" [nzLabel]="item" [nzValue]="item"></nz-option>
+          </nz-select>
+          <ng-template #tagPlaceHolder let-selectedList> y {{ selectedList.length }} más seleccionados </ng-template>
+          <button (click)=onDistrictChange() class="btn1 pt-2 pb-2">Filtrar</button>
+        </div>
+
 
         <div *ngFor="let companyData of companiesData"  class="item row m-0 col-12 p-0 mb-4">
             <div [routerLink]="['/tabs/home/profile/'+companyData.id]" class="col-12 m-0 p-0 row justify-content-center">
@@ -25,7 +34,7 @@
                       <img *ngIf="companyData.delivery" width="22" class="ml-2" src="/assets/img/icons/delivery.png" alt="Delivery">
                     </div>
                     <div class="col-12 p-0">
-                      <span class="f-11 font-700 text-color6">{{companyData.distance == 1000000 ? '-': companyData.distance }}</span>
+                      <span class="f-11 font-700 text-color6">{{companyData.distance == 1000000 ? '-': companyData.distance }} Km</span>
                       <!-- <span class="f-11 font-700 text-color6 ml-2">{{companyData.district }}</span> -->
                     </div>
                     <div *ngIf="companyData.starthour && companyData.endhour" class="col-12 p-0 m-0 row align-items-end">
@@ -54,7 +63,7 @@
         </div>
 
     </div>
-    <div id="map"></div>
+    <div #map id="map"></div>
 
 </ion-content>
 

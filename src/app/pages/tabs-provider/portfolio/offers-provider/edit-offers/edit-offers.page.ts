@@ -50,6 +50,8 @@ export class EditOffersPage implements OnInit {
   previewVisible = false;
   profileUrl: Observable<string | null>;
 
+  invalid: Boolean = false
+
 
 
   constructor(public route: ActivatedRoute, private router: Router, private api: ApiService, private cookie: CookieService, private general: GeneralService, private storage: AngularFireStorage) {
@@ -176,8 +178,14 @@ export class EditOffersPage implements OnInit {
 
   saveOffer() {
 
-    if (this.name == '') {
-      this.response = 'Debe completar al menos el nombre';
+    if (this.name == '' || 
+      this.croppedImage == '' ||
+      this.name == '' ||
+      this.description == '' ||
+      this.price == ''
+    ) {
+      this.invalid = true
+      this.response = 'Debe completar todos los campos';
     } else {
       this.isLoad = true
       const formData = new FormData();

@@ -8,13 +8,18 @@ import { ResultsPageRoutingModule } from './results-routing.module';
 
 import { ResultsPage } from './results.page';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzSelectModule } from 'ng-zorro-antd/select';
 
 @NgModule({
   imports: [
-    CommonModule,
+  
+  CommonModule,
     FormsModule,
     IonicModule,
-    ResultsPageRoutingModule
+    ResultsPageRoutingModule,
+    NzModalModule,
+    NzSelectModule
   ],
   declarations: [ResultsPage],
   providers: [  

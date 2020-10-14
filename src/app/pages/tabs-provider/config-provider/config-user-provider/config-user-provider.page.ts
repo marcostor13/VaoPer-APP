@@ -129,6 +129,7 @@ export class ConfigUserProviderPage implements OnInit {
         token: this.user.token,
         userid: this.user.user.id,
         password: this.password,
+        currentpassword: this.currentpassword,
       }
       this.api.api(data).subscribe((res: any) => {
         this.api.c('saveImageProfile result', res)

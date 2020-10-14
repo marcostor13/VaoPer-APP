@@ -93,14 +93,14 @@ export class FeaturedPage implements OnInit {
         token: this.user.token,
         service: 'get-companies-data-featured'
       }
-      this.api.api(data).subscribe((result: any) => {
+      this.api.api(data).subscribe(async (result: any) => {
         this.api.c('getCompaniesDataFeatured', result)
         if (result.status) {
 
           if (result.data.length > 0) {
             this.response = ''
             this.isLoad = false
-            this.companiesData = result.data
+            this.companiesData = await this.getCurrentPosition(result.data)
             // this.getCurrentPosition(result.data)
           } else {
             this.response = 'No tiene negocios favoritos'
@@ -127,91 +127,69 @@ export class FeaturedPage implements OnInit {
   }
 
 
-  getCurrentPosition(companiesData) {
-    this.general.getPosition().then(pos => {
-      this.api.c('Position', `${pos.lng} ${pos.lat}`)
-      this.currentPosition = {
-        lat: pos.lat,
-        lng: pos.lng
-      }
-      this.getDistances(companiesData)
-    });
+  rad(x) {
+    return x * Math.PI / 180;
   }
 
-  getDistances(companiesData) {
+  getKilometros(lat1, lon1, lat2, lon2) {
+    var R = 6378.137; //Radio de la tierra en km
+    var dLat = this.rad(lat2 - lat1);
+    var dLong = this.rad(lon2 - lon1);
+    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(this.rad(lat1)) * Math.cos(this.rad(lat2)) * Math.sin(dLong / 2) * Math.sin(dLong / 2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    var d = R * c;
+    return d.toFixed(1); //Retorna un decimales
+  }
 
-    for (let i = 0; i < companiesData.length; i++) {
-      const element = companiesData[i]
-      this.api.c('getDistances', element)
-      if (element.address1) {
-        var place = element.address1
-        this.getPositionByString(place, i, companiesData.length, companiesData)
+
+  async getCurrentPosition(companiesData) {
+
+    let newCompaniesData: any = []
+    const currentPosition = await this.general.getPosition()
+
+    if (currentPosition) {
+      for (const element of companiesData) {
+        this.api.c('Element', element)
+        if (element.lat) {
+          element['distance'] = parseFloat(this.getKilometros(element.lat, element.lng, currentPosition.lat, currentPosition.lng))
+        } else {
+          element['distance'] = 1000000
+        }
+        newCompaniesData.push(element)
       }
     }
 
-  }
-
-
-
-  getPositionByString(place, i, arrayLength, companiesData) {
-
-    var map = new google.maps.Map(document.getElementById('map'), {
-      center: { lat: -77.0008672, lng: -12.1425035 },
-      zoom: 15
-    });
-    var request = {
-      query: place,
-      fields: ['name', 'geometry'],
-    };
-    var service = new google.maps.places.PlacesService(map);
-    return new Promise(() => {
-      service.findPlaceFromQuery(request, results => {        
-
-        if(results){
-          var destinationPosition = {
-            lat: results[0].geometry.location.lat(),
-            lng: results[0].geometry.location.lng()
-          }
-          this.getDistance(destinationPosition, i, arrayLength, results)
-        }else{
-          this.companiesData = companiesData
-        }
-      })
-    });
+    newCompaniesData = newCompaniesData.sort(function (a, b) {
+      if (a['distance'] > b['distance']) {
+        return 1;
+      }
+      if (a['distance'] < b['distance']) {
+        return -1;
+      }
+      return 0;
+    })
+    return newCompaniesData
 
   }
 
 
-  getDistance(destinationPosition, i, arrayLength, companiesData) {
+  updateCoordinates(lat, lng, companyid) {
 
-    return new Promise(() => {
-      this.service.getDistanceMatrix({
-        origins: [this.currentPosition],
-        destinations: [destinationPosition],
-        travelMode: google.maps.TravelMode['DRIVING'],
-        unitSystem: google.maps.UnitSystem.METRIC,
-        avoidHighways: false,
-        avoidTolls: false
-      }, response => {
-        companiesData[i]['distance'] = response.rows[0].elements[0].distance.text
-        companiesData[i]['distanceValue'] = response.rows[0].elements[0].distance.value
-        this.api.c('getDistance res', response.rows[0].elements[0].distance.text)
-        this.api.c('getDistance arrayLength', arrayLength)
-        this.api.c('getDistance i', i)
-        if (i + 1 == arrayLength) {
-          this.companiesData = companiesData.sort(function (a, b) {
-            if (a['distanceValue'] > b['distanceValue']) {
-              return 1;
-            }
-            if (a['distanceValue'] < b['distanceValue']) {
-              return -1;
-            }
-            return 0;
-          });
-          this.isLoad = false
-        }
-      })
-    });
+    let data = {
+      token: this.user.token,
+      companyid: companyid,
+      service: 'update-coordinates',
+      lat: lat,
+      lng: lng,
+    }
+    this.api.api(data).subscribe((result: any) => {
+      this.isLoad = false
+      this.api.c('addFeaturedCompanies', result)
+    },
+      error => {
+        this.api.c('Error addFeaturedCompanies', error)
+
+      });
 
   }
 
@@ -287,7 +265,7 @@ export class FeaturedPage implements OnInit {
   message(receptorid, companyDataID, phone1) {
 
     if (phone1) {
-      window.location.href = `https://api.whatsapp.com/send?phone=51${phone1}&text=Hola, necesito más información`
+      window.location.href = `https://api.whatsapp.com/send?phone=51${phone1}&text=Hola, soy usuario VAO`
     }
 
     // if (!this.user) {

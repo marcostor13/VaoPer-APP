@@ -16,6 +16,8 @@ import {
 
 
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
 @NgModule({
   imports: [
@@ -23,7 +25,9 @@ import { GooglePlus } from '@ionic-native/google-plus/ngx';
     FormsModule,
     IonicModule,
     LoginPageRoutingModule,
-    SocialLoginModule
+    SocialLoginModule,
+    NzModalModule,
+    NzButtonModule
   ],
   providers: [
     GooglePlus,

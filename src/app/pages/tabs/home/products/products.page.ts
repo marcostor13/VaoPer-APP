@@ -180,7 +180,7 @@ export class ProductsPage implements OnInit {
   message(receptorid, companyDataID, phone1) {
 
     if (phone1) {
-      window.location.href = `https://api.whatsapp.com/send?phone=51${phone1}&text=Hola, necesito más información`
+      window.location.href = `https://api.whatsapp.com/send?phone=51${phone1}&text=Hola, soy usuario VAO`
     }
 
     // if (!this.user) {

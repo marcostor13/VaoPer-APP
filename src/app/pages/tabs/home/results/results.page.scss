@@ -111,3 +111,23 @@
 button:disabled{
     background-color: $color7 !important;
 }
+
+nz-select {
+    flex: 1;
+    max-width: 60%;
+}
+
+nz-select:hover, nz-select:focus{
+    border: 2px solid $color1 !important;
+    border-radius: 8px;
+}
+
+nz-select{
+    border: 2px solid $color1 !important;
+    border-radius: 8px;
+}
+
+.ant-select-focused.ant-select-multiple .ant-select-selector{
+    border-color: $color2 !important;
+    border-radius: 8px;
+}

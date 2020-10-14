@@ -52,8 +52,14 @@ export class RegisterPage implements OnInit {
         this.apiService.api(data).subscribe((result: any) => {
 
           if (result.success) {
-            this.cookie.set('ud', JSON.stringify(result));
-            this.router.navigate(['/']);
+            localStorage.setItem('ud', JSON.stringify(result))
+            if (result.user.role_id == 2) {
+              window.location.href = '/tabs-provider'
+              // this.router.navigate(['/tabs-provider']);
+            } else {
+              window.location.href = '/tabs'
+              // this.router.navigate(['/tabs']);
+            }
           } else {
             this.response = result.message
           }
@@ -80,31 +86,48 @@ export class RegisterPage implements OnInit {
   }
 
   onRegister(): void {
+    
 
     this.response = 'Procesando...'
-    let data = {
-      name: this.name,
-      email: this.email,
-      password: this.password,
-      role_id: 3,
-      service: 'register'
-    }
-    this.apiService.api(data).subscribe(result => {
-      this.cookie.set('ud', JSON.stringify(result));
-      this.router.navigate(['/tabs']);
-    },
-      error => {
-        if (error.status == 401) {
-          this.response = 'Error en el correo o contraseña'
-        } else {
-          this.response = JSON.stringify(error);
-        }
 
-      },
-      () => {
-        // 'onCompleted' callback.
-        // No errors, route to new page here
-      });
+    if (this.terminos){
+
+      if (this.name.trim() !== '' && this.email.trim() !== '' || this.password.trim() !== ''){
+        let data = {
+          name: this.name,
+          email: this.email,
+          password: this.password,
+          role_id: 3,
+          service: 'register'
+        }
+        this.apiService.api(data).subscribe((result:any) => {
+          if (result.success) {
+            localStorage.setItem('ud', JSON.stringify(result))
+            if (result.user.role_id == 2) {
+              window.location.href = '/tabs-provider'
+            } else {
+              window.location.href = '/tabs'
+            }
+          }else{
+            this.response = result.message
+          }
+  
+        },
+          error => {
+            if (error.status == 401) {
+              this.response = 'Error en el correo o contraseña'
+            } else {
+              this.response = JSON.stringify(error);
+            }  
+          });
+      }else{
+        this.response = 'Debe completar todos los campos'
+      }
+
+    }else{
+      this.response = 'Debe aceptar los términos y condiciones'
+    }
+
 
   }
 

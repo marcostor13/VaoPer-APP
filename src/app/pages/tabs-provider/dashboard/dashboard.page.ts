@@ -32,8 +32,8 @@ export class DashboardPage implements OnInit {
   showYAxisLabel: boolean = false;
   yAxisLabel: string = 'Population';
   animations: boolean = true;
-  startDate: any = moment().format('YYYY-MM-DD');
-  endDate: any = moment().add(7, 'days').format('YYYY-MM-DD');
+  startDate: any = moment().add(-7, 'days').format('YYYY-MM-DD');
+  endDate: any = moment().format('YYYY-MM-DD'); 
 
 
   call: any = 0
@@ -47,8 +47,6 @@ export class DashboardPage implements OnInit {
   };
 
   constructor(private router: Router, private api: ApiService, private cookie: CookieService) {  
-
-
     Object.assign(this.multi);
   }
 

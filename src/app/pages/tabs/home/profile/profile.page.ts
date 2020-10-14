@@ -56,10 +56,7 @@ export class ProfilePage implements OnInit {
     this.getProducts('featured');
     this.getProducts('products');
     this.getProducts('offers');
-    this.general.saveEvent('visit', this.id)
-
     
-
   }
 
   validateSession() {
@@ -107,6 +104,7 @@ export class ProfilePage implements OnInit {
 
       if (result.status) {
         this.companyData = result.data       
+        this.general.saveEvent('visit', this.companyData.id)
       } else {
         this.api.c('getCompanyData False', result)
       }
@@ -132,7 +130,7 @@ export class ProfilePage implements OnInit {
     const url = 'https://vaoperu.com/web/' + companyid
     const text = name
     this.socialSharing.share(text, document.title, null, url).then(_=>{
-      this.general.saveEvent('share', companyid)
+      this.general.saveEvent('share', this.companyData.id)
     })
 
   }
@@ -296,7 +294,7 @@ export class ProfilePage implements OnInit {
   message(receptorid, companyDataID, phone1) {
 
     if (phone1) {
-      window.location.href = `https://api.whatsapp.com/send?phone=51${phone1}&text=Hola, necesito más información`
+      window.location.href = `https://api.whatsapp.com/send?phone=51${phone1}&text=Hola, soy usuario VAO`
     }
 
 

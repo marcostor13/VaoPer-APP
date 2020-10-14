@@ -20,8 +20,8 @@
               </div>
               <div class="p-3 col-12">
                   <div [routerLink]="['/profile/'+companyData.id]" class="row m-0 justify-content-between">
-                      <span class="f-11 font-700">{{companyData.comercialname}}</span>
-                      <span class="f-11 font-700 text-color6">{{companyData.distance}}</span>
+                      <span class="f-11 font-700 col-12 p-0">{{companyData.comercialname}}</span>
+                      <span class="f-11 font-700 text-color6">{{companyData.distance == 1000000 ? '-': companyData.distance }} Km</span>
                   </div>
                   <div [routerLink]="['/tabs/home/profile/'+companyData.id]" class="row m-0 justify-content-between mt-2">
                       <p class="f-10" *ngIf="companyData.address1 && companyData.address1 != '' && companyData.address1 != ''">{{companyData.address1.substring(0,80) || ''}}<ng-container *ngIf="companyData.address1.length > 79">...</ng-container></p>         
@@ -45,7 +45,7 @@
 
       </div>
 
-      <div id="map"></div>      
+      <div #map id="map"></div>
 
   </div>
 

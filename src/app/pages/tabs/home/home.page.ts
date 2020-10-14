@@ -4,6 +4,7 @@ import { ApiService } from 'src/app/services/api.service';
 import { Router } from '@angular/router';
 import { Subject, Observable } from 'rxjs';
 import { GeneralService } from 'src/app/services/general.service';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 
 @Component({
@@ -34,12 +35,14 @@ export class HomePage implements OnInit {
     speed: 400
   };
 
+  district:any = '';
+
 
   eventsSubject: Subject<void> = new Subject<void>();
 
 
 
-  constructor(private router: Router, private api: ApiService, private cookie: CookieService, private general: GeneralService) {
+  constructor(private router: Router, private api: ApiService, private cookie: CookieService, private general: GeneralService, private modal: NzModalService) {
     this.getSlides()
   }
 
@@ -80,14 +83,27 @@ export class HomePage implements OnInit {
   }
 
   getCurrentPosition() {
-    this.general.getPosition().then(pos => {
 
-      this.currentPosition = {
-        lat: pos.lat,
-        lng: pos.lng
-      }
+    setTimeout(()=>{
+      this.general.getPosition()
+        .then(_=> {
+          console.log('POsition OK')
+        })
+        .catch((error: any) => {
+          this.error(error)
+          this.api.c('CurrentPosition Error', error)
+        })    
+      
+    },2000)
 
-    })
+  }
+
+  error(content): void {
+    this.modal.error({
+      nzTitle: 'Advertencia',
+      nzContent: content,
+      nzOkText: 'Aceptar',
+    });
   }
 
 
@@ -215,6 +231,13 @@ export class HomePage implements OnInit {
     })
     
   }  
+
+  redireccionar2() {
+
+    this.router.navigate(['/tabs/home/results/--' + this.general.formatURL(this.district)]).then(() => {
+      window.location.reload();
+    })
+  }
 
 
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from 'src/app/services/api.service';
 import { CookieService } from 'ngx-cookie-service';
@@ -6,6 +6,8 @@ import { GeneralService } from 'src/app/services/general.service';
 import { Observable, Subject } from 'rxjs';
 import { Plugins } from '@capacitor/core';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import { ElementRef, Renderer2 } from '@angular/core';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 const { Geolocation, Network } = Plugins;
 
@@ -18,6 +20,7 @@ declare var google;
 })
 export class ResultsPage implements OnInit {
 
+  @ViewChild('map') el: ElementRef;
   @Input() stateMenu: Observable<void>;
   eventsSubject: Subject<void> = new Subject<void>();
 
@@ -25,25 +28,96 @@ export class ResultsPage implements OnInit {
   //USER
   user: any;
   urlBackEnd: any = this.general.getUrlImages('profile');
-  companiesData: Array<any> = [];
+  companiesData: any = [];
   companiesData2: any;
   isLoad: Boolean = true
-  service = new google.maps.DistanceMatrixService;
+  service2;
   search: any = ''
   response: any = false
   categories: any;
+
+  
+
 
   //POSITION
 
   currentPosition: any = {}
 
-  constructor(public route: ActivatedRoute, private router: Router, private api: ApiService, private cookie: CookieService, public general: GeneralService, private socialSharing: SocialSharing) {
+  districts: any = []
+  companiesDataTemp: any;
+  valid:Boolean = false
+
+  listOptionsDistrict: Array<any> = [
+    'ANCON',
+    'ATE',
+    'BARRANCO',
+    'BREÑA',
+    'CARABAYLLO',
+    'CHACLACAYO',
+    'CHORRILLOS',
+    'CIENEGUILLA',
+    'COMAS',
+    'EL AGUSTINO',
+    'INDEPENDENCIA',
+    'JESUS MARIA',
+    'LA MOLINA',
+    'LA VICTORIA',
+    'LIMA',
+    'LINCE',
+    'LOS OLIVOS',
+    'LURIGANCHO',
+    'LURIN',
+    'MAGDALENA DEL MAR',
+    'MIRAFLORES',
+    'PACHACAMAC',
+    'PUCUSANA',
+    'PUEBLO LIBRE',
+    'PUENTE PIEDRA',
+    'PUNTA HERMOSA',
+    'PUNTA NEGRA',
+    'RIMAC',
+    'SAN BARTOLO',
+    'SAN BORJA',
+    'SAN ISIDRO',
+    'SAN JUAN DE LURIGANCHO',
+    'SAN JUAN DE MIRAFLORES',
+    'SAN LUIS',
+    'SAN MARTIN DE PORRES',
+    'SAN MIGUEL',
+    'SANTA ANITA',
+    'SANTA MARIA DEL MAR',
+    'SANTA ROSA',
+    'SANTIAGO DE SURCO',
+    'SURQUILLO',
+    'VILLA EL SALVADOR',
+    'VILLA MARIA DEL TRIUNFO',
+  ]
+
+  constructor(
+    public route: ActivatedRoute, 
+    private router: Router, 
+    private api: ApiService, 
+    private cookie: CookieService, 
+    public general: GeneralService, 
+    private socialSharing: SocialSharing,
+    private modal: NzModalService
+    ) {
     this.id = this.route.snapshot.paramMap.get('id')
   }
 
   ngOnInit(): void {
-    this.validateSession()
-    
+    this.validateSession()    
+  }
+
+  ngAfterViewInit() {
+
+    this.service2 = new google.maps.places.PlacesService(
+      new google.maps.Map(this.el.nativeElement, {
+        center: new google.maps.LatLng(-12.0202343, -77.0502994),
+        zoom: 15,
+      })
+    )
+
   }
 
   ionViewWillEnter() {
@@ -96,16 +170,15 @@ export class ResultsPage implements OnInit {
       service: 'get-companies-data',
       userid: this.user ? this.user.user.id : null
     }
-    this.api.api(data).subscribe((result: any) => {
-      this.api.c('getCompaniesData', result)
+    this.api.api(data).subscribe(async (result: any) => {     
       if (result.status) {
         if (result.data.length > 0) {
-          this.getCurrentPosition(this.deleteDuplicados(result.data))          
+          this.companiesData = await this.getCurrentPosition(this.deleteDuplicados(result.data))    
+          this.isLoad = false   
         } else {
           this.response = 'No hay resultados'
           this.isLoad = false
         }
-
       } else {
         this.api.c('getCompaniesData false', result)
       }
@@ -121,83 +194,87 @@ export class ResultsPage implements OnInit {
   }
 
 
-  getCurrentPosition(companiesData) {
-    this.general.getPosition().then(pos => {
-
-      this.currentPosition = {
-        lat: pos.lat,
-        lng: pos.lng
-      }
-
-    }).then(() => {
-      this.getDistances(companiesData)
-      this.isLoad = false
-    })
+  rad(x) {
+    return x * Math.PI / 180;
   }
 
-  orderCompanies(companiesData){
-    setTimeout(() => {
-      
-        this.api.c('this.companiesData.length', this.companiesData.length)
-        this.companiesData = this.companiesData.sort(function (a, b) {
-          if (a['distanceValue'] > b['distanceValue']) {
-            return 1;
+  getKilometros(lat1, lon1, lat2, lon2) {
+    var R = 6378.137; //Radio de la tierra en km
+    var dLat = this.rad(lat2 - lat1);
+    var dLong = this.rad(lon2 - lon1);
+    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(this.rad(lat1)) * Math.cos(this.rad(lat2)) * Math.sin(dLong / 2) * Math.sin(dLong / 2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    var d = R * c;
+    return d.toFixed(1); //Retorna un decimales
+  }
+
+
+  async getCurrentPosition(companiesData) {
+
+    let newCompaniesData: any = []
+    return this.general.getPosition()
+      .then((currentPosition: any) => {
+        if (currentPosition) {
+          for (const element of companiesData) {          
+            if (element.lat) {
+              element['distance'] = parseFloat(this.getKilometros(element.lat, element.lng, currentPosition.lat, currentPosition.lng))
+            } else {
+              element['distance'] = 1000000
+            }
+            newCompaniesData.push(element)
           }
-          if (a['distanceValue'] < b['distanceValue']) {
-            return -1;
-          }
-          return 0;
-        })
-        this.isLoad = false       
-    
-    }, 1000)
-  }
+          newCompaniesData = newCompaniesData.sort(function (a, b) {
+            if (a['distance'] > b['distance']) {
+              return 1;
+            }
+            if (a['distance'] < b['distance']) {
+              return -1;
+            }
+            return 0;
+          })
+          return newCompaniesData
 
-  getDistances(companiesData) {
-
-    for (let i = 0; i < companiesData.length; i++) {
-      const element = companiesData[i]
-      if (element.address1) {
-        var place = element.address1
-        this.getDistance(place, i, companiesData)
-      }
-
-      if (companiesData.length == i+1){
-        this.api.c('Terminado', 'ok')
-        this.orderCompanies(companiesData)
-      }
-    }
-
-  }
-
-
-
-  getDistance(destinationPosition, i, companiesData) {
-
-    this.service.getDistanceMatrix({
-      origins: [this.currentPosition],
-      destinations: [destinationPosition],
-      travelMode: google.maps.TravelMode['DRIVING'],
-      unitSystem: google.maps.UnitSystem.METRIC,
-      avoidHighways: false,
-      avoidTolls: false
-    }, response => {
-
-      companiesData[i]['distance'] = response.rows[0].elements[0].distance ? response.rows[0].elements[0].distance.text : ''
-      companiesData[i]['distanceValue'] = response.rows[0].elements[0].distance ? response.rows[0].elements[0].distance.value : 1000000
-
-      if (response.destinationAddresses) {
-        let dest = response.destinationAddresses[0].split(',')
-
-        if (dest.length > 1) {
-          companiesData[i]['district'] = dest[dest.length - 2].replace(/[0-9]+/g, '').trim()
-        } else {
-          companiesData[i]['district'] = dest[dest.length - 1].replace(/[0-9]+/g, '').trim()
         }
 
-      }
-      this.companiesData.push(companiesData[i])
-    })
+      })
+      .catch((error: any) => {
+
+        this.error(error)
+
+        this.api.c('CurrentPosition Error', error)
+
+
+      })
+
+  }
+
+  error(content): void {
+    this.modal.error({
+      nzTitle: 'Advertencia',
+      nzContent: content,
+      nzOkText: 'Aceptar',
+    });
+  }
+
+
+  updateCoordinates(lat, lng, companyid) {
+
+    let data = {
+      token: this.user.token,
+      companyid: companyid,
+      service: 'update-coordinates',
+      lat: lat,
+      lng: lng,
+    }
+    this.api.api(data).subscribe((result: any) => {
+      this.isLoad = false
+      this.api.c('addFeaturedCompanies', result)
+    },
+      error => {
+        this.api.c('Error addFeaturedCompanies', error)
+
+      });
+
   }
 
   addFeaturedCompanies(companyid, e: any) {
@@ -317,7 +394,7 @@ export class ResultsPage implements OnInit {
 
   message(receptorid, companyDataID, phone1) {
     if(phone1){
-      window.location.href = `https://api.whatsapp.com/send?phone=51${phone1}&text=Hola, necesito más información`
+      window.location.href = `https://api.whatsapp.com/send?phone=51${phone1}&text=Hola, soy usuario VAO`
     }
     this.general.saveEvent('message', companyDataID)
   }
@@ -332,6 +409,45 @@ export class ResultsPage implements OnInit {
     })
 
     return true;
+  }
+
+
+  issetDistrict(district) {
+    let res = false
+    this.districts.forEach(d => {
+      if (d == district) {
+        res = true
+      }
+    });
+    return res
+  }
+
+
+  onDistrictChange() {
+
+    this.isLoad = true
+
+    if (this.valid === false) {
+      this.companiesDataTemp = this.companiesData
+      this.valid = true
+    }
+
+    let newCompaniesData = []
+
+    if (this.districts.length === 0) {
+      this.companiesData = this.companiesDataTemp
+      this.isLoad = false
+    } else {
+      this.companiesDataTemp.forEach(d => {
+        if (this.issetDistrict(d.district)) {
+          newCompaniesData.push(d)
+        }
+      });
+      this.isLoad = false
+      this.companiesData = newCompaniesData
+    }
+
+
   }
 
 
