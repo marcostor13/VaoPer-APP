@@ -9,7 +9,7 @@ const routes: Routes = [
   },
   {
     path: 'tabs-provider',
-    loadChildren: () => import('./pages/tabs-provider/tabs-provider.module').then(m => m.TabsProviderModule)
+    loadChildren: () => import('./pages/tabs-provider/tabs-provider.module').then(m => m.TabsProviderModule),   
   },
   {
     path: 'login',

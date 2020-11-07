@@ -51,7 +51,7 @@ export class ProfilePage implements OnInit {
   ngOnInit(): void {
     this.api.c('ID', this.id)
     this.validateSession()
-    this.getCompanyData()
+
     this.getCategoriesAndSubcategories()
     this.getProducts('featured');
     this.getProducts('products');

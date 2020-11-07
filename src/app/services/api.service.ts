@@ -3,7 +3,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { combineLatest } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+import * as action from './../actions/setdata.actions'
+
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +19,8 @@ export class ApiService {
     private http: HttpClient, 
     private cookie: CookieService, 
     private router: Router, 
-    private firestore: AngularFirestore
+    private firestore: AngularFirestore,
+    private store: Store<{ data: any }>,
     ) { //
     // if (window.location.href.indexOf('104.155.156.43') > -1 || window.location.href.indexOf('vaoperu') > -1) {
     //   this.url = 'https://api.vaoperu.com/api/';
@@ -181,6 +185,15 @@ export class ApiService {
 
   c(title, message) {
     console.log('%c' + title + '%c=>', "background-color: purple; color:white;font-family:system-ui;font-size:10pt;font-weight:bold;padding: 4px", "background-color: white; color:purple;font-size:10pt;font-weight:bold;padding: 4px", message);
+  }
+
+  
+  getData(){
+    return 
+  }
+
+  setData(data: any) {
+    this.store.dispatch(action.setdata({ data: data }))
   }
 
 

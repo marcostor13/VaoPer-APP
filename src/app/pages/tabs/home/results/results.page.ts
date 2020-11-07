@@ -8,6 +8,7 @@ import { Plugins } from '@capacitor/core';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { ElementRef, Renderer2 } from '@angular/core';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { Store } from '@ngrx/store';
 
 const { Geolocation, Network } = Plugins;
 
@@ -36,7 +37,9 @@ export class ResultsPage implements OnInit {
   response: any = false
   categories: any;
 
-  
+  //MODAL
+  contentModal: string
+  isVisibleModal: boolean = false
 
 
   //POSITION
@@ -100,10 +103,19 @@ export class ResultsPage implements OnInit {
     private cookie: CookieService, 
     public general: GeneralService, 
     private socialSharing: SocialSharing,
-    private modal: NzModalService
+    private modal: NzModalService,
+    private store: Store<{ data: any }>,
     ) {
     this.id = this.route.snapshot.paramMap.get('id')
+
+    // this.store.select('data').subscribe((data: any) => {
+    //   this.api.c('DATA', data)
+    //   this.companiesData = data
+    // })
+    
+
   }
+
 
   ngOnInit(): void {
     this.validateSession()    
@@ -249,11 +261,13 @@ export class ResultsPage implements OnInit {
   }
 
   error(content): void {
-    this.modal.error({
-      nzTitle: 'Advertencia',
-      nzContent: content,
-      nzOkText: 'Aceptar',
-    });
+    this.contentModal = content
+    this.isVisibleModal = true;
+  }
+
+  closeModal() {
+    this.isVisibleModal = false
+    this.router.navigate(['/'])
   }
 
 
@@ -447,6 +461,24 @@ export class ResultsPage implements OnInit {
       this.companiesData = newCompaniesData
     }
 
+
+  }
+
+  capitalize(s) {
+    if (typeof s !== 'string') return ''
+    return s.charAt(0).toUpperCase() + s.slice(1)
+  }
+
+  formatId(id) {
+
+
+    if (id.indexOf('#') > -1) {
+      return this.capitalize(id.split('#')[0])
+    } else if (id.indexOf('&') > -1) {
+      return this.capitalize(id.split('&')[0])
+    } else {
+      return this.capitalize(id)
+    }
 
   }
 

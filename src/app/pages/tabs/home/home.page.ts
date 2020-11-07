@@ -5,7 +5,8 @@ import { Router } from '@angular/router';
 import { Subject, Observable } from 'rxjs';
 import { GeneralService } from 'src/app/services/general.service';
 import { NzModalService } from 'ng-zorro-antd/modal';
-
+import { Store, select } from '@ngrx/store';
+import * as action from './../../../actions/setdata.actions'
 
 @Component({
   selector: 'app-home',
@@ -30,28 +31,42 @@ export class HomePage implements OnInit {
   search: String = ''
   currentPosition: any;
 
+  contentModal: string = ''
+  isVisibleModal: boolean = false
+
   slideOpts = {
     initialSlide: 1,
     speed: 400
   };
 
   district:any = '';
-
-
   eventsSubject: Subject<void> = new Subject<void>();
 
+  
 
 
-  constructor(private router: Router, private api: ApiService, private cookie: CookieService, private general: GeneralService, private modal: NzModalService) {
-    this.getSlides()
+
+  constructor(
+    private router: Router, 
+    private api: ApiService, 
+    private cookie: CookieService, 
+    private general: GeneralService, 
+    private modal: NzModalService,
+    private store: Store<{ data: any }>,
+    ) {
+    
+        
   }
 
   ngOnInit(): void {
-    this.validateSession()
+    this.getSlides()
     this.getCategoriesAndSubcategories()
-    this.getCompaniesData()
-    this.getCurrentPosition()
+    // this.getCompaniesData()
+    this.validateSession()
+    
   }
+
+
 
   validateSession() {
     if (localStorage.getItem('ud')) {
@@ -83,27 +98,23 @@ export class HomePage implements OnInit {
   }
 
   getCurrentPosition() {
-
-    setTimeout(()=>{
-      this.general.getPosition()
-        .then(_=> {
-          console.log('POsition OK')
-        })
-        .catch((error: any) => {
-          this.error(error)
-          this.api.c('CurrentPosition Error', error)
-        })    
-      
-    },2000)
-
+    this.general.getPosition()
+    .then(_ => {
+      console.log('POsition OK')
+    })
+    .catch((error: any) => {
+      // this.error(error)
+      this.api.c('CurrentPosition Error', error)
+    }) 
   }
 
   error(content): void {
-    this.modal.error({
-      nzTitle: 'Advertencia',
-      nzContent: content,
-      nzOkText: 'Aceptar',
-    });
+    this.contentModal = content
+    this.isVisibleModal = true;
+  }
+
+  closeModal(){
+    this.isVisibleModal = false    
   }
 
 
@@ -116,11 +127,14 @@ export class HomePage implements OnInit {
       this.api.c('getCategoriesAndSubcategories result', result)
       this.categories = result
       this.isLoad = false
+      setTimeout(() => {
+        this.getCurrentPosition()
+      }, 5000)
+
     },
       error => {
         this.api.c('Error getCategoriesAndSubcategories', error)
       });
-
   }
 
 
@@ -159,8 +173,9 @@ export class HomePage implements OnInit {
       if (result.status) {
         if (result.data.length > 0) {
           this.companies = this.deleteDuplicados(result.data)
+          this.api.setData(this.companies)
         } else {
-          this.api.c('getCompaniesData false', result)
+          this.api.c('getCompaniesData false', result)          
           this.isLoad = false
         }
 
@@ -168,18 +183,18 @@ export class HomePage implements OnInit {
         this.api.c('getCompaniesData false', result)
       }
     },
-      error => {
-        this.api.c('Error getCompaniesData', error)
+    error => {
+      this.api.c('Error getCompaniesData', error)
 
-      });
+    });
   }
 
 
 
-  onclickOpenSubcategories(index, subcategories, category): void {
+  onclickOpenSubcategories(index, subcategories, category, categoryid = null): void {
 
     if (subcategories === 0) {
-      this.router.navigate(['/tabs/home/results/' + category])
+      this.router.navigate(['/tabs/home/results/' + category + '&' + categoryid])
     }
 
     if (!this.visibleIndices.delete(index)) {
@@ -238,6 +253,8 @@ export class HomePage implements OnInit {
       window.location.reload();
     })
   }
+
+  
 
 
 

@@ -12,12 +12,14 @@ import { AngularFireAnalyticsModule } from '@angular/fire/analytics';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { environment } from '../environments/environment';
 import { TabsProviderModule } from './pages/tabs-provider/tabs-provider.module';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { NZ_I18N } from 'ng-zorro-antd/i18n';
 import { es_ES } from 'ng-zorro-antd/i18n';
 import { registerLocaleData } from '@angular/common';
 import es from '@angular/common/locales/es';
+import { StoreModule } from '@ngrx/store';
+import { setDataReducer } from './reducers/setdata.reducer';
 
 registerLocaleData(es);
 
@@ -26,7 +28,8 @@ registerLocaleData(es);
   entryComponents: [],
   imports: [
     BrowserModule, 
-    BrowserAnimationsModule,
+    // BrowserAnimationsModule,
+    NoopAnimationsModule,
     IonicModule.forRoot(), 
     AppRoutingModule,
     TabsModule,
@@ -34,6 +37,7 @@ registerLocaleData(es);
     AuthModule,
     HttpClientModule,
     AngularFireModule.initializeApp(environment.firebase),
+    StoreModule.forRoot({ data: setDataReducer }, {}),
     AngularFireAnalyticsModule,
     AngularFirestoreModule,
     FormsModule

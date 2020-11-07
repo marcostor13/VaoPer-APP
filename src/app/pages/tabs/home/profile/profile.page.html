@@ -17,15 +17,15 @@
           </div>
           <div class="col-12 row m-0 p-0 justify-content-between align-items-center mt-4">
 
-              <button [routerLink]="['/tabs/home/information/'+id]"  class="btn3 pr-3 pl-3 pt-2 pb-2 font-700 f-10">VER INFORMACIÓN</button>
-                <div class="row m-0">
+                <button [routerLink]="['/tabs/home/information/'+id]"  class="btn3 pr-3 pl-3 pt-2 pb-2 font-700 f-10">VER INFORMACIÓN</button>
+                <div class="row m-0 align-items-center">
                     <img *ngIf="companyData.tienda" width="22" class="ml-2" src="/assets/img/icons/tienda.png" alt="Recojo en tienda">
                     <img *ngIf="companyData.delivery" width="22" class="ml-2" src="/assets/img/icons/delivery.png" alt="Delivery">
                 </div>
-              <div>
-                  <img (click)="addFeaturedCompanies(companyData.id, $event)" width="32" [src]="companyData.idfeatured ? '/assets/img/partials/star.svg' : '/assets/img/partials/star-g.svg'" alt="">
-                  <img (click)="share(companyData.url, companyData.comercialname)" width="22" class="ml-2" src="/assets/img/partials/share.svg" alt="">
-              </div>
+                <div>
+                    <img (click)="addFeaturedCompanies(companyData.id, $event)" width="32" [src]="companyData.idfeatured ? '/assets/img/partials/star.svg' : '/assets/img/partials/star-g.svg'" alt="">
+                    <img (click)="share(companyData.url, companyData.comercialname)" width="22" class="ml-2" src="/assets/img/partials/share.svg" alt="">
+                </div>
           </div>
 
           
