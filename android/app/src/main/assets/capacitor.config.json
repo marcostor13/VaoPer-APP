@@ -14,7 +14,7 @@
         "email"
       ],
       "serverClientId": "216189303909-di5rc6rrp30hni4h5uqegfh0oi5h5tsf.apps.googleusercontent.com",
-      "forceCodeForRefreshToken" : true
+      "forceCodeForRefreshToken": true
     }
   },
   "cordova": {}

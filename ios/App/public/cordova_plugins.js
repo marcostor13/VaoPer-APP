@@ -41,7 +41,7 @@
     module.exports.metadata =
     // TOP OF METADATA
     {
-      "cordova-plugin-googleplus": "8.5.0",
+      "cordova-plugin-googleplus": "8.5.",
       "cordova-plugin-ionic": "5.4.7",
       "cordova-plugin-x-socialsharing": "5.6.8",
       "es6-promise-plugin": "4.2.2"
