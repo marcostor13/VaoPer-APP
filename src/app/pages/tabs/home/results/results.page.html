@@ -38,8 +38,8 @@
                 <div [routerLink]="['/tabs/home/profile/'+companyData.id]" class="row m-0 justify-content-between">
                     <span class="f-11 font-700">{{companyData.comercialname}}</span>
                     <div class="row m-0">
-                      <img *ngIf="companyData.tienda" width="22" class="ml-2" src="/assets/img/icons/tienda.png" alt="Recojo en tienda">
-                      <img *ngIf="companyData.delivery" width="22" class="ml-2" src="/assets/img/icons/delivery.png" alt="Delivery">
+                      <img *ngIf="companyData.tienda" width="22" height="22" class="ml-2" src="/assets/img/icons/tienda.png" alt="Recojo en tienda">
+                      <img *ngIf="companyData.delivery" width="22" height="22" class="ml-2" src="/assets/img/icons/delivery.png" alt="Delivery">
                     </div>
                     <div class="col-12 p-0">
                       <span class="f-11 font-700 text-color6">{{companyData.distance == 1000000 ? '-': companyData.distance }} Km</span>
