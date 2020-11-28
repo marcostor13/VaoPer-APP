@@ -100,20 +100,11 @@ export class ResultsPage implements OnInit {
     public route: ActivatedRoute, 
     private router: Router, 
     private api: ApiService, 
-    private cookie: CookieService, 
     public general: GeneralService, 
     private socialSharing: SocialSharing,
     private modal: NzModalService,
-    private store: Store<{ data: any }>,
     ) {
-    this.id = this.route.snapshot.paramMap.get('id')
-
-    // this.store.select('data').subscribe((data: any) => {
-    //   this.api.c('DATA', data)
-    //   this.companiesData = data
-    // })
-    
-
+    this.id = this.route.snapshot.paramMap.get('id')  
   }
 
 
@@ -138,7 +129,6 @@ export class ResultsPage implements OnInit {
   }
 
   getCategoriesAndSubcategories() {
-
     let data = {
       service: 'get-categories-and-subcategories'
     }
@@ -161,10 +151,7 @@ export class ResultsPage implements OnInit {
     this.router.navigate(['/results/' + this.search]).then(() => {
       window.location.reload();
     });
-
   }
-
-
 
   validateSession() {
     if (localStorage.getItem('ud')) {
@@ -174,7 +161,6 @@ export class ResultsPage implements OnInit {
   }
 
   getCompaniesData() {
-
     this.companiesData = []
 
     let data = {
@@ -192,12 +178,10 @@ export class ResultsPage implements OnInit {
           this.isLoad = false
         }
       } else {
-        this.api.c('getCompaniesData false', result)
-      }
+        this.api.c('getCompaniesData false', result)      }
     },
       error => {
         this.api.c('Error getCompaniesData', error)
-
       });
   }
 
@@ -222,7 +206,6 @@ export class ResultsPage implements OnInit {
 
 
   async getCurrentPosition(companiesData) {
-
     let newCompaniesData: any = []
     return this.general.getPosition()
       .then((currentPosition: any) => {
@@ -245,30 +228,17 @@ export class ResultsPage implements OnInit {
             return 0;
           })
           return newCompaniesData
-
         }
 
       })
-      .catch((error: any) => {
-
-        this.error(error)
-
+      .catch((error: any) => {    
         this.api.c('CurrentPosition Error', error)
-
-
+        return companiesData;    
       })
 
   }
 
-  error(content): void {
-    this.contentModal = content
-    this.isVisibleModal = true;
-  }
 
-  closeModal() {
-    this.isVisibleModal = false
-    this.router.navigate(['/'])
-  }
 
 
   updateCoordinates(lat, lng, companyid) {
@@ -286,7 +256,6 @@ export class ResultsPage implements OnInit {
     },
       error => {
         this.api.c('Error addFeaturedCompanies', error)
-
       });
 
   }
@@ -348,7 +317,6 @@ export class ResultsPage implements OnInit {
   }
 
   getFeaturedCompanies() {
-
     if (this.user) {
       let data = {
         userid: this.user.user.id,
@@ -368,20 +336,15 @@ export class ResultsPage implements OnInit {
 
         });
     }
-
-
   }
 
-  share(companyid, name) {    
-
+  share(companyid, name) { 
     const url = 'https://vaoperu.com/web/' + companyid
     const text = name
     this.socialSharing.share(text, document.title, null, url).then(_=>{
       this.general.saveEvent('share', companyid)
     })
-
   }
-
 
   toogleMenu() {
     this.api.c('toogleMenuFather', 'ok')
@@ -389,42 +352,17 @@ export class ResultsPage implements OnInit {
   }
 
   deleteDuplicados(array) {
-
     let res = []
     for (let index = 0; index < array.length; index++) {
       const e = array[index];
       if (this.general.searchIndexByNameKey(res, 'id', e.id) === false) {
-
         e['distanceValue'] = 0;
         e['distance'] = '';
-
         res.push(e)
       }
     }
-
     return res
-
   }
-
-  message(receptorid, companyDataID, phone1) {
-    if(phone1){
-      window.location.href = `https://api.whatsapp.com/send?phone=51${phone1}&text=Hola, soy usuario VAO`
-    }
-    this.general.saveEvent('message', companyDataID)
-  }
-
-
-  createChat(useridOri, useridDes) {
-    this.api.createChat({
-      collection: 'chats',
-      token: this.user.token,
-      useridOri: useridOri,
-      useridDes: useridDes
-    })
-
-    return true;
-  }
-
 
   issetDistrict(district) {
     let res = false
@@ -438,16 +376,12 @@ export class ResultsPage implements OnInit {
 
 
   onDistrictChange() {
-
     this.isLoad = true
-
     if (this.valid === false) {
       this.companiesDataTemp = this.companiesData
       this.valid = true
     }
-
     let newCompaniesData = []
-
     if (this.districts.length === 0) {
       this.companiesData = this.companiesDataTemp
       this.isLoad = false
@@ -470,8 +404,6 @@ export class ResultsPage implements OnInit {
   }
 
   formatId(id) {
-
-
     if (id.indexOf('#') > -1) {
       return this.capitalize(id.split('#')[0])
     } else if (id.indexOf('&') > -1) {

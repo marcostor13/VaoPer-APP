@@ -161,4 +161,9 @@ export class ProductsProviderPage implements OnInit {
     return await modal.present();
   }
 
+
+  isNumber(price){
+    return !isNaN(Number(price));
+  }
+
 }

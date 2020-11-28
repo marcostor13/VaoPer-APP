@@ -9,21 +9,17 @@
 
 <ion-content>
 
-  <div class="content bg-white">    
-    
+  <div class="content bg-white">        
       <div class="p-3 row m-0 pb-5 mb-5">
           <div class="row m-0 col-12">
               <h5 class="border-1 col-12 bg-color1 text-center font-700 pt-2 pb-2">{{companyData.comercialname}}</h5>
           </div>
-
           <div class="row m-0 col-12 justify-content-center">
               <a href="tel:{{companyData.phone1}}" class="btn1 flex-1 pt-2 pb-2 mr-2 font-700 text-center link-unstyled">LLAMADA</a>
               <button (click)="message(companyData.userid, companyData.id, companyData.phone1)" class="btn2 flex-1 pt-2 pb-2 font-700">WHATSAPP</button>
-          </div>
-          
+          </div>         
 
           <div class="border-1 col-12 p-3">
-
               <div *ngIf="companyData.legalname && companyData.legalname!= '' && companyData.legalname!= 'null'" class="row m-0 justify-content-start align-items-center mt-2">
                   <span class="vertical-line bg-color2"></span>
                   <div class="ml-3">
@@ -31,7 +27,6 @@
                       <p class="m-0 p-0">{{companyData.legalname}}</p>
                   </div>
               </div>
-
               <div *ngIf="companyData.ruc && companyData.ruc!= '' && companyData.ruc!= 'null'" class="row m-0 justify-content-start align-items-center mt-2">
                   <span class="vertical-line bg-color2"></span>
                   <div class="ml-3">
@@ -39,7 +34,6 @@
                       <p class="m-0 p-0">{{companyData.ruc}}</p>
                   </div>
               </div>
-
               <div *ngIf="companyData.email" class="row m-0 justify-content-start align-items-center mt-2">
                   <span class="vertical-line bg-color2"></span>
                   <div class="ml-3">
@@ -47,15 +41,13 @@
                       <p class="m-0 p-0">{{companyData.email === 'null' ? '-': companyData.email }}</p>
                   </div>
               </div>
-
               <div *ngIf="companyData.phone1" class="row m-0 justify-content-start align-items-center mt-2">
                   <span class="vertical-line bg-color2"></span>
                   <div class="ml-3">
                       <p class="col-12 font-700 m-0 p-0">Teléfono</p>
                       <p class="m-0 p-0">{{companyData.phone1 === 'null' ? '-': companyData.phone1}}</p>
                   </div>
-              </div> 
-              
+              </div>               
               <div *ngIf="companyData.siteweb" class="row m-0 justify-content-start align-items-center mt-2">
                   <span class="vertical-line bg-color2"></span>
                   <div class="ml-3">
@@ -63,7 +55,6 @@
                       <p class="m-0 p-0"><a class="text-color2" (click)="red(companyData.siteweb)">{{companyData.siteweb === 'null' ? '-': companyData.siteweb}}</a></p>
                   </div>
               </div>
-
           </div>
 
           <div class="border-1 col-12 p-3">
@@ -74,19 +65,14 @@
                       <p class="col-12 font-700 m-0 p-0">Dirección</p>
                       <p class="m-0 p-0">{{companyData.address2 === 'null' ? '-': companyData.address2}}</p>
                   </div>
-              </div>
-
-              
+              </div>              
 
               <agm-map [latitude]="lat" [longitude]="lng" [zoom]="15">
                     <agm-marker [latitude]="lat" [longitude]="lng" ></agm-marker>
                 </agm-map>
-
               <div id="map" class="col-12 mt-2"></div>
-
           </div>
-
-          
+        
 
       </div>
 

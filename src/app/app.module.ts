@@ -20,6 +20,7 @@ import { registerLocaleData } from '@angular/common';
 import es from '@angular/common/locales/es';
 import { StoreModule } from '@ngrx/store';
 import { setDataReducer } from './reducers/setdata.reducer';
+import { NzModalModule } from 'ng-zorro-antd/modal';
 
 registerLocaleData(es);
 
@@ -27,7 +28,8 @@ registerLocaleData(es);
   declarations: [AppComponent],
   entryComponents: [],
   imports: [
-    BrowserModule, 
+
+  BrowserModule, 
     // BrowserAnimationsModule,
     NoopAnimationsModule,
     IonicModule.forRoot(), 
@@ -40,7 +42,8 @@ registerLocaleData(es);
     StoreModule.forRoot({ data: setDataReducer }, {}),
     AngularFireAnalyticsModule,
     AngularFirestoreModule,
-    FormsModule
+    FormsModule,
+    NzModalModule
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },

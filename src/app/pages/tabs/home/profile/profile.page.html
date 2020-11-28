@@ -19,8 +19,8 @@
 
                 <button [routerLink]="['/tabs/home/information/'+id]"  class="btn3 pr-3 pl-3 pt-2 pb-2 font-700 f-10">VER INFORMACIÓN</button>
                 <div class="row m-0 align-items-center">
-                    <img *ngIf="companyData.tienda" width="22" class="ml-2" src="/assets/img/icons/tienda.png" alt="Recojo en tienda">
-                    <img *ngIf="companyData.delivery" width="22" class="ml-2" src="/assets/img/icons/delivery.png" alt="Delivery">
+                    <img *ngIf="companyData.tienda" width="22" class="m-0 ml-2" src="/assets/img/icons/tienda.png" alt="Recojo en tienda">
+                    <img *ngIf="companyData.delivery" width="22" class="m-0 ml-2" src="/assets/img/icons/delivery.png" alt="Delivery">
                 </div>
                 <div>
                     <img (click)="addFeaturedCompanies(companyData.id, $event)" width="32" [src]="companyData.idfeatured ? '/assets/img/partials/star.svg' : '/assets/img/partials/star-g.svg'" alt="">
@@ -37,7 +37,7 @@
                 <span class="f-11 font-700 text-color6 ml-2">- {{companyData.endhour }}</span>
             </div>
           <p *ngIf="companyData.description  && companyData.description!= 'null'" class="font-500 mt-2 f-11">{{companyData.description}}</p>
-          <div class="row m-0">
+          <div class="row m-0 mt-3">
               <a href="tel:{{companyData.phone1}}" (click)="general.saveEvent('call', companyData.id)" class="btn1 flex-1 pt-2 pb-2 mr-2 font-700 text-center link-unstyled">LLAMADA</a>
               <button (click)="message(companyData.userid, companyData.id, companyData.phone1)" class="btn2 flex-1 pt-2 pb-2 font-700">WHATSAPP</button>
           </div>
@@ -50,11 +50,11 @@
 
 
       <div>
-          <div *ngIf="companyData.products && companyData.products.length > 0" class="pl-3 pt-3">
+          <div *ngIf="companyData.products && companyData.products.length > 0" class="pl-3 pt-1">
               <h6 class="font-700 text-color2">Productos</h6>
           </div>
 
-          <ion-slides *ngIf="companyData.products && companyData.products.length > 0" pager="false" [options]="slideOpts" class="p-3">
+          <ion-slides *ngIf="companyData.products && companyData.products.length > 0" pager="false" [options]="slideOpts" class="slides p-3 pt-1">
             <ion-slide *ngFor="let item of companyData.products; let i = index" class="p-2">
                     
                 <div [routerLink]="['/tabs/home/products/products/'+item.companyid]" *ngIf="item.images && item.images.length > 0"  class="img row m-0 justify-content-center align-items-start" [ngStyle]="{'background-image': 'url('+ getFirstImage(item.images) +')'}">
@@ -91,7 +91,7 @@
           <div *ngIf="companyData.featured && companyData.featured.length > 0" class="pl-3">
               <h6 class="font-700 text-color2">Productos Destacados</h6>
           </div>
-          <ion-slides *ngIf="companyData.featured && companyData.featured.length > 0" pager="false" [options]="slideOpts" class="p-3">
+          <ion-slides *ngIf="companyData.featured && companyData.featured.length > 0" pager="false" [options]="slideOpts" class="slides p-3">
               <ion-slide *ngFor="let item of companyData.featured; let i = index" class="p-2">
                   <div [routerLink]="['/tabs/home/products/featured/'+item.companyid]" *ngIf="item.images && item.images.length > 0"  class="img row m-0 justify-content-center align-items-start" [ngStyle]="{'background-image': 'url('+ getFirstImage(item.images) +')'}">
                       <div class="description col-12 row m-0 p-3">
@@ -129,21 +129,15 @@
           </div>
           
 
-          <ion-slides *ngIf="companyData.offers && companyData.offers.length > 0" pager="false" [options]="slideOpts" class="p-3">
-            <ion-slide *ngFor="let item of companyData.offers; let i = index" class="p-2">            
-                  <!-- <div  class="img-item" [ngStyle]="{'background-image': 'url('+ item.image +')'}"></div> -->
-                  <div *ngIf="item.image" [routerLink]="['/tabs/home/products/offers/'+item.companyid]" class="img" [ngStyle]="{'background-image': 'url('+ item.image +')'}">
+          <ion-slides *ngIf="companyData.offers && companyData.offers.length > 0" pager="false" [options]="slideOpts" class="slides p-3">
+            <ion-slide *ngFor="let item of companyData.offers; let i = index" class="p-2">   
+                        
+                  <div *ngIf="item.image && item.image.indexOf('http')>-1" [routerLink]="['/tabs/home/products/offers/'+item.companyid]" class="img" [ngStyle]="{'background-image': 'url('+ item.image +')'}">
                       <div class="description col-12 row m-0 p-3">
                           <span>{{item.name}}</span>
                           <p class="col-12 m-0 text-center text-white  p-0 f-10" *ngIf="item.description && item.description != '' && item.description != 'null'" [innerHTML]="item.description.substring(0,30)"><ng-container *ngIf="item.description.length > 29">...</ng-container></p>
                       </div>
-                  </div>
-                  <!-- <div *ngIf="item.image.indexOf('data:image') === -1" [routerLink]="['/tabs/home/products/offers/'+item.companyid]" class="img" [ngStyle]="{'background-image': 'url('+ urlBackEndOffers + getUriImage(item.image) +')'}">
-                      <div class="description col-12 row m-0 p-3">
-                          <span>{{item.name}}</span>
-                          <p class="col-12 m-0 text-center text-white  p-0 f-10" *ngIf="item.description && item.description != '' && item.description != 'null'">{{item.description.substring(0,40)}}<ng-container *ngIf="item.description.length > 39">...</ng-container></p> 
-                      </div>
-                  </div>         -->
+                  </div>             
             </ion-slide>
           </ion-slides>
 

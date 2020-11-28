@@ -1,23 +1,24 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
+
 const routes: Routes = [
 
   {
     path: 'tabs',
-    loadChildren: () => import('./pages/tabs/tabs.module').then(m => m.TabsModule)
+    loadChildren: () => import('./pages/tabs/tabs.module').then(m => m.TabsModule),
   },
   {
     path: 'tabs-provider',
-    loadChildren: () => import('./pages/tabs-provider/tabs-provider.module').then(m => m.TabsProviderModule),   
+    loadChildren: () => import('./pages/tabs-provider/tabs-provider.module').then(m => m.TabsProviderModule), 
   },
   {
     path: 'login',
-    loadChildren: () => import('./pages/auth/login/login.module').then( m => m.LoginPageModule)
+    loadChildren: () => import('./pages/auth/login/login.module').then( m => m.LoginPageModule),
   },
   {
     path: 'register',
-    loadChildren: () => import('./pages/auth/register/register.module').then( m => m.RegisterPageModule)
+    loadChildren: () => import('./pages/auth/register/register.module').then( m => m.RegisterPageModule),
   },
   
   {

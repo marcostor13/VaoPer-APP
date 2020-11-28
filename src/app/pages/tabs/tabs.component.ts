@@ -1,11 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { IonTabs } from '@ionic/angular';
 import { Router } from '@angular/router';
-
-import { Observable } from 'rxjs';
-import { AngularFirestore } from '@angular/fire/firestore';
 import { ApiService } from 'src/app/services/api.service';
-import { CookieService } from 'ngx-cookie-service';
+import { environment } from "../../../environments/environment";
+import { GeneralService } from 'src/app/services/general.service';
 
 @Component({
   selector: 'app-tabs',
@@ -17,37 +14,49 @@ export class TabsComponent implements OnInit {
   notifications: Number = 0; 
   user: any;
 
-  constructor(private firestore: AngularFirestore, public router: Router, private api: ApiService, private cookie: CookieService) { 
+  constructor(
+    public router: Router, 
+    private api: ApiService, 
+    private general: GeneralService
+    ) { 
     this.validateSession()
   }
 
   ngOnInit() {
-    
+    this.getVersion()
   }
 
-  validateSession() {
-    
+  validateSession() {    
     if (localStorage.getItem('ud')) {     
       this.user = JSON.parse(localStorage.getItem('ud'))
       if(this.user.user.role_id == 2){
         window.location.href = '/tabs-provider'
       }
     }
-
   }
 
-
-  getMessages() {
-
-    this.api.c('getMessages Menú', 'Init')
-    let collection = 'chatnotification_' + this.user.user.id
-
-    this.firestore.collection(collection).valueChanges().subscribe((res) => {
-      this.api.c('MENSAJES NOTIFICACIONES', res.length)
-      this.notifications = res.length
+  getVersion() {
+    this.api.api({
+      service: 'get-version'
+    }).subscribe((version: any) => {
+      const os = this.general.detectOS();
+      if (version.version !== environment.version) {
+        if (os === 'Android') {
+          this.general.info({
+            title: 'Información',
+            content: 'La aplicación tiene una nueva versión, actualice para continuar',
+            type: 'redirect',
+            data: 'https://play.google.com/store/apps/details?id=com.vaoperu.app'
+          })
+        }
+      }
+      this.api.c('currentVersion', environment.version)
+      this.api.c('getVreturn', version)
     })
-
   }
+
+
+  
 
   
 
