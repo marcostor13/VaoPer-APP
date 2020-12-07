@@ -3,6 +3,8 @@ import {ApiService} from './api.service';
 import {CookieService} from 'ngx-cookie-service';
 
 import * as moment from 'moment';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { Router } from '@angular/router';
 import {Platform} from '@ionic/angular';
 
 import {Plugins} from '@capacitor/core';
@@ -18,6 +20,8 @@ export class GeneralService {
 
   constructor(public api: ApiService,
               public cookie: CookieService,
+              private modal: NzModalService,
+              private router: Router,
               private platform: Platform) {
     if (localStorage.getItem('ud') && localStorage.getItem('ud') != '') {
       this.user = JSON.parse(localStorage.getItem('ud'));
@@ -180,6 +184,63 @@ export class GeneralService {
 
     return normalize(srt).replace(/\s/g, '-').toLowerCase();
 
+  }
+
+  detectOS(){
+    if(navigator.userAgent.indexOf('Android')>-1){
+      return 'Android';
+    }else if (navigator.userAgent.indexOf('iPhone') > -1){
+      return 'iPhone';      
+    }else{
+      return 'Other';
+    }
+  }
+
+
+  private action(type:string, data:any){
+    switch (type) {
+      case 'redirect':
+        if(data.indexOf('http')>-1){
+          window.location.href = data; 
+        }else{
+          this.router.navigate([data])
+        }
+        break;
+    
+      default:
+        this.api.c('Action Service', type)
+        break;
+    }
+  }
+
+
+  info(data:any): void {
+    this.modal.info({
+      nzTitle: data.title,
+      nzContent: data.content,
+      nzOnOk: () => this.action(data.type, data.data)
+    });
+  }
+
+  success(data: any): void {
+    this.modal.success({
+      nzTitle: data.title,
+      nzContent: data.content
+    });
+  }
+
+  error(data: any): void {
+    this.modal.error({
+      nzTitle: data.title,
+      nzContent: data.content
+    });
+  }
+
+  warning(data: any): void {
+    this.modal.warning({
+      nzTitle: data.title,
+      nzContent: data.content
+    });
   }
 
 

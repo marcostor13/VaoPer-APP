@@ -16,7 +16,7 @@
         <p [routerLink]="['config-user']" class="m-0 p-0 font-700">Opciones de usuario</p>
     </div>
 
-    <div *ngIf="user" class="option p-3 col-12 bg-color7 mt-2">
+    <div class="option p-3 col-12 bg-color7 mt-2">
         <p (click)="toogle()" class="m-0 p-0 font-700">Anuncia tu negocio</p>
         <div *ngIf="toogleAnuncio">
             <input [(ngModel)]="name" class="col-12 border rounded mt-2 pt-2 pb-2" type="text" placeholder="Nombre">

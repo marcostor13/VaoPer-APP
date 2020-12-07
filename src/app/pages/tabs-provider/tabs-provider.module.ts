@@ -4,7 +4,7 @@ import { TabsProviderRoutingModule } from './tabs-provider-routing.module';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { TabsProviderComponent } from './tabs-provider.component';
-
+import { Device } from '@ionic-native/device/ngx';
 
 @NgModule({
   declarations: [
@@ -14,7 +14,8 @@ import { TabsProviderComponent } from './tabs-provider.component';
     IonicModule,
     CommonModule,
     FormsModule,
-    TabsProviderRoutingModule
-  ]
+    TabsProviderRoutingModule,    
+  ], 
+  providers: [Device]
 })
 export class TabsProviderModule { }

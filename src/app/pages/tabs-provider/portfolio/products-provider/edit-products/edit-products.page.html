@@ -16,6 +16,7 @@
       <div class="form-group mt-2">
           <div class="inputImage">
               <input (change)="fileChangeEvent($event)" accept="image/*" type="file" class="form-control" [(ngModel)]="image">
+              <!-- <ion-input type="file" accept="image/*"  class="form-control" [(ngModel)]="image" (ionChange)="fileChangeEvent($event)"></ion-input> -->
               <div>Seleccione una imagen</div>
           </div>
       </div>

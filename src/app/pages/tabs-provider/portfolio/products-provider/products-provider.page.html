@@ -42,7 +42,7 @@
                 <div class="f-10 pr-3" *ngIf="prod.description && prod.description != '' && prod.description != 'null'" [innerHTML]="prod.description.substring(0,60)"></div> 
                 <div *ngIf="prod.description && prod.description.length > 59"><span (click)='presentModal(prod.description)' class="cursor font-700 f-10 text-color2">...ver más</span></div>
                 <div class="row m-0 col-11 justify-content-between p-0">
-                    <p *ngIf="prod.price && prod.price != 'null'" class="f-12 text-color2 font-700">S/ {{prod.price | number:'1.2-2'}}</p>
+                    <p *ngIf="prod.price && prod.price != 'null' && isNumber(prod.price)" class="f-12 text-color2 font-700">S/ {{prod.price | number:'1.2-2'}}</p>
                     <div class="row m-0 mt-2 justify-content-between col-12 p-0">
                         <button [routerLink]="['/tabs-provider/portfolio/products-provider/edit-products/'+prod.id]" class="btn3 mb-3 f-11 font-700 pt-2 pb-2">Editar</button>
                         <button (click)="deleteProduct(prod.id)" class="btn4 mb-3 f-11 font-700 pt-2 pb-2">Eliminar</button>

@@ -91,6 +91,10 @@ export class ConfigProviderPage implements OnInit {
     },
       error => {
         this.api.c('Error getImageProfile', error)
+        if (error.error.message === 'Token has expired'){
+          localStorage.removeItem('ud');
+          this.router.navigate(['/auth/login']);
+        }
       });
   }
 
