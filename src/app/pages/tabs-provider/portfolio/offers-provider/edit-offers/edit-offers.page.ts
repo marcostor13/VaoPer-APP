@@ -181,8 +181,7 @@ export class EditOffersPage implements OnInit {
     if (this.name == '' || 
       this.croppedImage == '' ||
       this.name == '' ||
-      this.description == '' ||
-      this.price == ''
+      this.description == ''     
     ) {
       this.invalid = true
       this.response = 'Debe completar todos los campos';
@@ -192,9 +191,7 @@ export class EditOffersPage implements OnInit {
       formData.append('image', this.croppedImage)
       formData.append('name', this.name)
       formData.append('description', this.description)
-      formData.append('price', this.price)
-      // formData.append('startDate', this.startDate)
-      // formData.append('endDate', this.endDate)
+      formData.append('price', this.price || '')
       if (this.enable) {
         formData.append('enable', '1')
       } else {
@@ -220,21 +217,17 @@ export class EditOffersPage implements OnInit {
       this.api.c('saveOffer pre', data)
 
       this.api.apiUpload(data).subscribe((res: any) => {
-
         this.api.c('saveOffer res', res)
-
         this.isLoad = false
 
         if (res.status) {
           this.response = res.message
-
           if (this.id == 0) {
             this.name = ''
             this.description = ''
             this.image = ''
             this.startDate = ''
             this.endDate = ''
-
           }
         } else {
           this.api.c('saveOffer', res)

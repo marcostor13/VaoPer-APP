@@ -8,7 +8,6 @@ import { Plugins } from '@capacitor/core';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { ElementRef, Renderer2 } from '@angular/core';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { Store } from '@ngrx/store';
 
 const { Geolocation, Network } = Plugins;
 
@@ -206,7 +205,9 @@ export class ResultsPage implements OnInit {
 
 
   async getCurrentPosition(companiesData) {
-    let newCompaniesData: any = []
+
+    let newCompaniesData: any = []   
+
     return this.general.getPosition()
       .then((currentPosition: any) => {
         if (currentPosition) {
@@ -232,13 +233,24 @@ export class ResultsPage implements OnInit {
 
       })
       .catch((error: any) => {    
-        this.api.c('CurrentPosition Error', error)
+        this.api.c('CurrentPosition Error', error);
+        if (this.general.detectOS() === 'iPhone'){
+          this.general.info({
+            title: 'Información',
+            content: 'Para ubicar negocios por distancia, activa tu GPS'        
+          });
+        }
         return companiesData;    
       })
 
   }
 
-
+  message(receptorid, companyDataID, phone1) {
+    if (phone1) {
+      window.location.href = `https://api.whatsapp.com/send?phone=51${phone1}&text=Hola, soy usuario VAO`
+    }
+    this.general.saveEvent('message', companyDataID)
+  }
 
 
   updateCoordinates(lat, lng, companyid) {

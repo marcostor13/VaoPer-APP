@@ -78,16 +78,21 @@ export class GeneralService {
   }
 
   getPosition(): Promise<any> {
+
+    const options = {
+      enableHighAccuracy: false,
+      timeout: 5000,
+      maximumAge: 0
+    };
+
     return new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(resp => {
+      navigator.geolocation.watchPosition(resp => {
         console.log('Res navigator', resp)
         resolve({ lng: resp.coords.longitude, lat: resp.coords.latitude });
       },
-        err => {
-          // alert('Para usar VAO debes ensender tu ubicación GPS')
-          console.log('Error navigatro', err)
-          reject('Para usar VAO debes encender tu ubicación GPS');
-        });
+      err => {
+        reject('Para ubicar negocios por distancia, activa tu GPS');
+      },options);
     });
   }
 
