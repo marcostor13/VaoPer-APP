@@ -3,8 +3,8 @@ import {ApiService} from './api.service';
 import {CookieService} from 'ngx-cookie-service';
 
 import * as moment from 'moment';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { Router } from '@angular/router';
+import {NzModalService} from 'ng-zorro-antd/modal';
+import {Router} from '@angular/router';
 import {Platform} from '@ionic/angular';
 
 import {Plugins} from '@capacitor/core';
@@ -36,13 +36,13 @@ export class GeneralService {
       return params;
     }
 
-    var query = '?';
-    var index = 0;
+    let query = '?';
+    let index = 0;
 
-    for (var i in params) {
+    for (const i in params) {
       index++;
-      var param = i;
-      var value = params[i];
+      const param = i;
+      const value = params[i];
       if (index == 1) {
         query += param + '=' + value;
       } else {
@@ -64,7 +64,7 @@ export class GeneralService {
   }
 
   searchIndexByNameKey(array, key, value) {
-    var res: any = false;
+    let res: any = false;
     for (let i = 0; i < array.length; i++) {
       const element = array[i];
       if (element[key] == value) {
@@ -93,23 +93,22 @@ export class GeneralService {
 
     return new Promise((resolve, reject) => {
       if (this.platform.is('ios')) {
-        Geolocation.getCurrentPosition()
-          .then(resp => {
-              console.log('Res navigator', resp);
-              resolve({lng: resp.coords.longitude, lat: resp.coords.latitude});
-            },
-            err => {
-              console.log('Error navigatro', err);
-              reject('Para usar VAO debes encender tu ubicación GPS');
-            });
+        try {
+          Geolocation.watchPosition(options, (resp, err) => {
+            console.log('Res navigator', resp);
+            resolve({lng: resp.coords.longitude, lat: resp.coords.latitude});
+          });
+        } catch (err) {
+          reject('Para ubicar negocios por distancia, activa tu GPS');
+        }
       } else {
         navigator.geolocation.watchPosition(resp => {
-          console.log('Res navigator', resp)
-          resolve({ lng: resp.coords.longitude, lat: resp.coords.latitude });
-        },
-        err => {
-          reject('Para ubicar negocios por distancia, activa tu GPS');
-        },options);
+            console.log('Res navigator', resp);
+            resolve({lng: resp.coords.longitude, lat: resp.coords.latitude});
+          },
+          err => {
+            reject('Para ubicar negocios por distancia, activa tu GPS');
+          }, options);
       }
     });
   }
@@ -119,9 +118,9 @@ export class GeneralService {
     this.api.c('Navigator', navigator);
 
     if (this.user) {
-      let data = {
-        type: type,
-        companyid: companyid,
+      const data = {
+        type,
+        companyid,
         description: '',
         userid: this.user.user.id,
         token: this.user.token,
@@ -135,9 +134,9 @@ export class GeneralService {
           this.api.c('Error saveEvent', error);
         });
     } else {
-      let data = {
-        type: type,
-        companyid: companyid,
+      const data = {
+        type,
+        companyid,
         description: '',
         userid: '0',
         ga: JSON.stringify(navigator),
@@ -155,27 +154,27 @@ export class GeneralService {
   }
 
   apertura(start, end) {
-    let today = moment().format('YYYY-MM-DD');
-    let betweenStart = today + ' ' + start;
-    let betweenEnd = today + ' ' + end;
-    let time = moment().isBetween(betweenStart, betweenEnd);
+    const today = moment().format('YYYY-MM-DD');
+    const betweenStart = today + ' ' + start;
+    const betweenEnd = today + ' ' + end;
+    const time = moment().isBetween(betweenStart, betweenEnd);
     return time;
   }
 
   formatURL(srt) {
-    var normalize = (function() {
-      var from = 'ÃÀÁÄÂÈÉËÊÌÍÏÎÒÓÖÔÙÚÜÛãàáäâèéëêìíïîòóöôùúüûÑñÇç`"´',
+    const normalize = (function() {
+      const from = 'ÃÀÁÄÂÈÉËÊÌÍÏÎÒÓÖÔÙÚÜÛãàáäâèéëêìíïîòóöôùúüûÑñÇç`"´',
         to = 'AAAAAEEEEIIIIOOOOUUUUaaaaaeeeeiiiioooouuuunncc  ',
         mapping = {};
 
-      for (var i = 0, j = from.length; i < j; i++) {
+      for (let i = 0, j = from.length; i < j; i++) {
         mapping[from.charAt(i)] = to.charAt(i);
       }
 
       return function(str) {
-        var ret = [];
-        for (var i = 0, j = str.length; i < j; i++) {
-          var c = str.charAt(i);
+        const ret = [];
+        for (let i = 0, j = str.length; i < j; i++) {
+          const c = str.charAt(i);
           if (mapping.hasOwnProperty(str.charAt(i))) {
             ret.push(mapping[c]);
           } else {
@@ -191,35 +190,35 @@ export class GeneralService {
 
   }
 
-  detectOS(){
-    if(navigator.userAgent.indexOf('Android')>-1){
+  detectOS() {
+    if (navigator.userAgent.indexOf('Android') > -1) {
       return 'Android';
-    }else if (navigator.userAgent.indexOf('iPhone') > -1){
-      return 'iPhone';      
-    }else{
+    } else if (navigator.userAgent.indexOf('iPhone') > -1) {
+      return 'iPhone';
+    } else {
       return 'Other';
     }
   }
 
 
-  private action(type:string, data:any){
+  private action(type: string, data: any) {
     switch (type) {
       case 'redirect':
-        if(data.indexOf('http')>-1){
-          window.location.href = data; 
-        }else{
-          this.router.navigate([data])
+        if (data.indexOf('http') > -1) {
+          window.location.href = data;
+        } else {
+          this.router.navigate([data]);
         }
         break;
-    
+
       default:
-        this.api.c('Action Service', type)
+        this.api.c('Action Service', type);
         break;
     }
   }
 
 
-  info(data:any): void {
+  info(data: any): void {
     this.modal.info({
       nzTitle: data.title,
       nzContent: data.content,

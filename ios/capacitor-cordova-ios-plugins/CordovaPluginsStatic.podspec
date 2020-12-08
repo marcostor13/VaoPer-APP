@@ -14,7 +14,7 @@
     s.swift_version  = '5.0'
     s.static_framework = true
     s.dependency 'GoogleSignIn', '~> 5.0.2'
-    s.dependency 'GoogleUtilities', '~> 6.6'
+    s.dependency 'GoogleUtilities', '~> 6.7'
     s.weak_frameworks = 'AddressBook', 'CoreText', 'SafariServices', 'Security', 'SystemConfiguration'
     s.libraries = 'z'
   end
