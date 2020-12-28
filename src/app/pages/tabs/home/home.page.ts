@@ -72,7 +72,6 @@ export class HomePage implements OnInit {
     if (localStorage.getItem('ud')) {
       this.user = JSON.parse(localStorage.getItem('ud'))
     }
-
   }
 
   getSlides() {
@@ -102,16 +101,10 @@ export class HomePage implements OnInit {
     .then(_ => {
       console.log('POsition OK')
     })
-    .catch((error: any) => {
-      // this.error(error)
+    .catch((error: any) => {      
       this.api.c('CurrentPosition Error', error)
     }) 
-  }
-
-  error(content): void {
-    this.contentModal = content
-    this.isVisibleModal = true;
-  }
+  }  
 
   closeModal(){
     this.isVisibleModal = false    
