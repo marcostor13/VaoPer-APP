@@ -1,20 +1,20 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormsModule} from '@angular/forms';
 
-import { IonicModule } from '@ionic/angular';
+import {IonicModule} from '@ionic/angular';
 
-import { ResultsPageRoutingModule } from './results-routing.module';
+import {ResultsPageRoutingModule} from './results-routing.module';
 
-import { ResultsPage } from './results.page';
-import { SocialSharing } from '@ionic-native/social-sharing/ngx';
-import { NzModalModule } from 'ng-zorro-antd/modal';
-import { NzSelectModule } from 'ng-zorro-antd/select';
+import {ResultsPage} from './results.page';
+import {SocialSharing} from '@ionic-native/social-sharing/ngx';
+import {NzModalModule} from 'ng-zorro-antd/modal';
+import {NzSelectModule} from 'ng-zorro-antd/select';
 
 @NgModule({
   imports: [
-  
-  CommonModule,
+
+    CommonModule,
     FormsModule,
     IonicModule,
     ResultsPageRoutingModule,
@@ -22,8 +22,9 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
     NzSelectModule
   ],
   declarations: [ResultsPage],
-  providers: [  
-    SocialSharing 
+  providers: [
+    SocialSharing
   ]
 })
-export class ResultsPageModule {}
+export class ResultsPageModule {
+}

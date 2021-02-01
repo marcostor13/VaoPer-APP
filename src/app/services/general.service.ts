@@ -84,7 +84,6 @@ export class GeneralService {
   }
 
   getPosition(): Promise<any> {
-
     const options = {
       enableHighAccuracy: false,
       timeout: 5000,
@@ -96,6 +95,11 @@ export class GeneralService {
         try {
           Geolocation.watchPosition(options, (resp, err) => {
             console.log('Res navigator', resp);
+
+            if (err) {
+              reject('Para ubicar negocios por distancia, activa tu GPS');
+            }
+
             resolve({lng: resp.coords.longitude, lat: resp.coords.latitude});
           });
         } catch (err) {
